@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="3.0" xmlns="https://jakarta.ee/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd">
+  <!-- Define Persistence Unit -->
+  <persistence-unit name="my_persistence_unit">
+    <class>com.ndd.pojo.PracticeSession</class>
+    <class>com.ndd.pojo.Vocabulary</class>
+    <class>com.ndd.pojo.Answer</class>
+    <class>com.ndd.pojo.ProgressTracker</class>
+    <class>com.ndd.pojo.Lesson</class>
+    <class>com.ndd.pojo.StudyPlan</class>
+    <class>com.ndd.pojo.UserVocabulary</class>
+    <class>com.ndd.pojo.Exercise</class>
+    <class>com.ndd.pojo.User</class>
+    <class>com.ndd.pojo.Section</class>
+    <class>com.ndd.pojo.Category</class>
+    <class>com.ndd.pojo.UserAnswer</class>
+    <class>com.ndd.pojo.UserWritingAnswer</class>
+    <class>com.ndd.pojo.SectionType</class>
+    <class>com.ndd.pojo.UserSpeakingAnswer</class>
+    <class>com.ndd.pojo.LessonType</class>
+    <class>com.ndd.pojo.CategoryType</class>
+  </persistence-unit>
+</persistence>
