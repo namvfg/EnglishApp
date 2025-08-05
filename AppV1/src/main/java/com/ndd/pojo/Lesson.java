@@ -23,6 +23,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -37,7 +39,6 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Lesson.findAll", query = "SELECT l FROM Lesson l"),
     @NamedQuery(name = "Lesson.findById", query = "SELECT l FROM Lesson l WHERE l.id = :id"),
     @NamedQuery(name = "Lesson.findByTitle", query = "SELECT l FROM Lesson l WHERE l.title = :title"),
-    @NamedQuery(name = "Lesson.findBySkill", query = "SELECT l FROM Lesson l WHERE l.skill = :skill"),
     @NamedQuery(name = "Lesson.findByCreatedDate", query = "SELECT l FROM Lesson l WHERE l.createdDate = :createdDate"),
     @NamedQuery(name = "Lesson.findByUpdatedDate", query = "SELECT l FROM Lesson l WHERE l.updatedDate = :updatedDate")})
 public class Lesson implements Serializable {
@@ -49,20 +50,23 @@ public class Lesson implements Serializable {
     @Column(name = "id")
     private Integer id;
     @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 255)
     @Column(name = "title")
     private String title;
     @Basic(optional = false)
-    @Column(name = "skill")
-    private String skill;
-    @Basic(optional = false)
+    @NotNull
     @Lob
+    @Size(min = 1, max = 65535)
     @Column(name = "content")
     private String content;
     @Basic(optional = false)
+    @NotNull
     @Column(name = "created_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdDate;
     @Basic(optional = false)
+    @NotNull
     @Column(name = "updated_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedDate;
@@ -84,10 +88,9 @@ public class Lesson implements Serializable {
         this.id = id;
     }
 
-    public Lesson(Integer id, String title, String skill, String content, Date createdDate, Date updatedDate) {
+    public Lesson(Integer id, String title, String content, Date createdDate, Date updatedDate) {
         this.id = id;
         this.title = title;
-        this.skill = skill;
         this.content = content;
         this.createdDate = createdDate;
         this.updatedDate = updatedDate;
@@ -107,14 +110,6 @@ public class Lesson implements Serializable {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public String getSkill() {
-        return skill;
-    }
-
-    public void setSkill(String skill) {
-        this.skill = skill;
     }
 
     public String getContent() {

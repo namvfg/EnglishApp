@@ -121,4 +121,12 @@ public class CategoryRepositoryImpl implements CategoryRepository {
             return false;
         }
     }
+
+    @Override
+    public Category getCategoryById(int id) {
+        Session session = this.factory.getObject().getCurrentSession();
+        Query q = session.createNamedQuery("Category.findById", Category.class);
+        q.setParameter("id", id);
+        return (Category) q.getSingleResult();
+    }
 }

@@ -4,12 +4,15 @@
  */
 package com.ndd.pojo;
 
+import com.ndd.enums.Skill;
 import java.io.Serializable;
 import java.util.Set;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -17,6 +20,8 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -30,7 +35,8 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(name = "LessonType.findAll", query = "SELECT l FROM LessonType l"),
     @NamedQuery(name = "LessonType.findById", query = "SELECT l FROM LessonType l WHERE l.id = :id"),
-    @NamedQuery(name = "LessonType.findByName", query = "SELECT l FROM LessonType l WHERE l.name = :name")})
+    @NamedQuery(name = "LessonType.findByName", query = "SELECT l FROM LessonType l WHERE l.name = :name"),
+    @NamedQuery(name = "LessonType.findBySkill", query = "SELECT l FROM LessonType l WHERE l.skill = :skill")})
 public class LessonType implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -40,8 +46,16 @@ public class LessonType implements Serializable {
     @Column(name = "id")
     private Integer id;
     @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 100)
     @Column(name = "name")
     private String name;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 9)
+    @Enumerated(EnumType.STRING)
+    @Column(name = "skill")
+    private Skill skill;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "lessonTypeId")
     private Set<Lesson> lessonSet;
 
@@ -52,9 +66,10 @@ public class LessonType implements Serializable {
         this.id = id;
     }
 
-    public LessonType(Integer id, String name) {
+    public LessonType(Integer id, String name, Skill skill) {
         this.id = id;
         this.name = name;
+        this.skill = skill;
     }
 
     public Integer getId() {
@@ -71,6 +86,14 @@ public class LessonType implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Skill getSkill() {
+        return skill;
+    }
+
+    public void setSkill(Skill skill) {
+        this.skill = skill;
     }
 
     @XmlTransient

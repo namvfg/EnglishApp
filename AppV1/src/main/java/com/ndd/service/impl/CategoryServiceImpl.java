@@ -38,5 +38,10 @@ public class CategoryServiceImpl implements CategoryService{
     public boolean addOrUpdateCategory(Category c) {
         return this.categoryRepo.addOrUpdateCategory(c);
     }
+
+    @Override
+    public Category getCategoryById(int id) {
+        return this.categoryRepo.getCategoryById(id);
+    }
     
 }

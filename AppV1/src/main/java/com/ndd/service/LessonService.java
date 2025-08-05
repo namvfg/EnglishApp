@@ -4,6 +4,7 @@
  */
 package com.ndd.service;
 
+import com.ndd.pojo.Lesson;
 import java.util.List;
 import java.util.Map;
 
@@ -12,5 +13,7 @@ import java.util.Map;
  * @author Admin
  */
 public interface LessonService {
-    List<Object[]> getLessons(Map<String, String> params);
+    List<Lesson> getLessonsByCategoryId(int categoryId, Map<String, String> params);
+    
+    long countLessonsByCategoryId(int categoryId, Map<String, String> params);
 }

@@ -19,4 +19,6 @@ public interface CategoryService {
     long countCategories(Map<String, String> params);
 
     boolean addOrUpdateCategory(Category c);
+
+    Category getCategoryById(int id);
 }

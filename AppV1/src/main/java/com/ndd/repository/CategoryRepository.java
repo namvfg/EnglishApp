@@ -19,9 +19,12 @@ public interface CategoryRepository {
 
     List<Category> getCategories(Map<String, String> params);
 
+    Category getCategoryById(int id);
+
     long countCategories(Map<String, String> params);
 
     Predicate[] buildCategoryPredicates(CriteriaBuilder b, Root root, Map<String, String> params);
-    
+
     boolean addOrUpdateCategory(Category c);
+
 }

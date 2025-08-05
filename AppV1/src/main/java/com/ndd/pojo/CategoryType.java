@@ -39,17 +39,15 @@ public class CategoryType implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    
     @Column(name = "id")
     private Integer id;
     @Basic(optional = false)
-    @NotNull(message = "{categoryType.name.notNull}")
-    @Size(min = 5, max = 100, message = "{categoryType.name.lenErr}")
+    @NotNull
+    @Size(min = 1, max = 100)
     @Column(name = "name")
     private String name;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "categoryTypeId")
     private Set<Category> categorySet;
-    
 
     public CategoryType() {
     }

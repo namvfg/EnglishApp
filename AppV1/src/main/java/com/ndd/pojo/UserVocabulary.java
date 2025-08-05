@@ -19,6 +19,8 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -44,17 +46,21 @@ public class UserVocabulary implements Serializable {
     @Column(name = "id")
     private Integer id;
     @Basic(optional = false)
+    @NotNull
     @Column(name = "created_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdDate;
     @Basic(optional = false)
+    @NotNull
     @Column(name = "updated_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedDate;
     @Basic(optional = false)
+    @NotNull
     @Column(name = "last_review")
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastReview;
+    @Size(max = 255)
     @Column(name = "note")
     private String note;
     @JoinColumn(name = "user_id", referencedColumnName = "id")

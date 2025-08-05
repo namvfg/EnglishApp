@@ -20,6 +20,8 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -44,16 +46,19 @@ public class PracticeSession implements Serializable {
     @Column(name = "id")
     private Integer id;
     @Basic(optional = false)
+    @NotNull
     @Column(name = "start_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date startAt;
     @Basic(optional = false)
+    @NotNull
     @Column(name = "duration")
     private int duration;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Column(name = "score")
     private Float score;
     @Lob
+    @Size(max = 65535)
     @Column(name = "feedback")
     private String feedback;
     @JoinColumn(name = "lesson_id", referencedColumnName = "id")

@@ -22,5 +22,10 @@
         <put-attribute name="content" 
                        value="/WEB-INF/pages/category.jsp" />
     </definition>
+    <definition name="lessons" extends="baseLayout">
+        <put-attribute name="title" value="Lesson" />
+        <put-attribute name="content" 
+                       value="/WEB-INF/pages/lesson.jsp" />
+    </definition>
 </tiles-definitions>
 

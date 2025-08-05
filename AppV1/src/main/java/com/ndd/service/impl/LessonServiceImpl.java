@@ -4,10 +4,12 @@
  */
 package com.ndd.service.impl;
 
+import com.ndd.pojo.Lesson;
 import com.ndd.repository.LessonRepository;
 import com.ndd.service.LessonService;
 import java.util.List;
 import java.util.Map;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,11 +21,17 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class LessonServiceImpl implements LessonService{
 
+    @Autowired
     private LessonRepository lessonRepo;
     
     @Override
-    public List<Object[]> getLessons(Map<String, String> params) {
-        return this.lessonRepo.getLessons(null);
+    public List<Lesson> getLessonsByCategoryId(int categoryId, Map<String, String> params) {
+        return this.lessonRepo.getLessonsByCategoryId(categoryId, params);
+    }
+
+    @Override
+    public long countLessonsByCategoryId(int categoryId, Map<String, String> params) {
+        return this.lessonRepo.countLessonsByCategoryId(categoryId, params);
     }
     
 }

@@ -11,21 +11,32 @@
 <section class="container">
     <div class="mt-2">
         <c:url value="/categories" var="categoriesAction" />
-        <a href="${categoriesAction}" class="btn btn-info">Thêm sản phẩm</a>
+        <a href="${categoriesAction}" class="btn btn-info">Thêm danh muc</a>
     </div>
-    <c:if test="${pageQuantity > 1}">
-        <div class="mt-2">
-            <ul class="pagination">
-                <li class="page-item"><a class="page-link" href="${action}">Tất cả</a></li>
-                    <c:forEach begin="1" end="${pageQuantity}" var="i">
-                        <c:url value="/" var="pageAction">
-                            <c:param name="page" value="${i}" />
-                        </c:url> 
-                    <li class="page-item"><a class="page-link" href="${pageAction}">${i}</a></li>
-                    </c:forEach>
-            </ul>
-        </div>
-    </c:if>
+    <div class="mt-2">
+        <ul class="pagination">
+            <li class="page-item">
+                <a class="page-link" href="${action}">Tất cả</a>
+            </li>
+            <c:if test="${pageQuantity > 1}">
+                <c:forEach begin="1" end="${pageQuantity}" var="i">
+                    <c:url value="/" var="pageAction">
+                        <c:param name="page" value="${i}" />
+                        <c:if test="${not empty param.kw}">
+                            <c:param name="kw" value="${param.kw}" />
+                        </c:if>
+                        <c:if test="${not empty param.cateTypeId}">
+                            <c:param name="cateTypeId" value="${param.cateTypeId}" />
+                        </c:if>
+                    </c:url>
+                    <li class="page-item">
+                        <a href="${pageAction}" class="${i == param.page ? 'active' : ''} page-link">${i}</a>
+                    </li>
+                </c:forEach>
+            </c:if>
+        </ul>
+    </div>
+
     <table class="table table-hover">
         <thead>
             <tr>
@@ -44,8 +55,8 @@
                     <td>${c.createdDate}</td>
                     <td>${c.updatedDate}</td>
                     <td>
-                        <a href="#" class="btn btn-success">Cập nhật</a>
-                        <button class="btn btn-danger">Xóa</button>
+                        <a href="<c:url value="/categories/${c.id}"/>" class="btn btn-success mb-1">Cập nhật</a>
+                        <button class="btn btn-danger mb-1">Xóa</button>
                     </td>
                 </tr>
             </c:forEach>
