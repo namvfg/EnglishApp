@@ -25,20 +25,12 @@
             </div>
 
             <div class="form-floating">
-                <form:select path="categoryTypeId" class="form-select" id="categoryType" name="categoryType">
-                    <c:forEach items="${categoryTypes}" var="ct">
-                        <c:choose>
-                            <c:when test="${ct.id == category.categoryTypeId.id}">
-                                <option value="${ct.id}" selected>${ct.name}</option>
-                            </c:when>
-                            <c:otherwise>
-                                <option value="${ct.id}">${ct.name}</option>
-                            </c:otherwise>
-                        </c:choose>
-                    </c:forEach>
+                <form:select path="categoryTypeId" class="form-select" id="categoryType">
+                    <form:options items="${categoryTypes}" itemValue="id" itemLabel="name" />
                 </form:select>
                 <label for="categoryType" class="form-label">Select list:</label>
             </div>
+
             <div class="form-floating mt-2 mb-2">
                 <button class="btn btn-info">
                     <c:choose>
@@ -51,40 +43,41 @@
         </form:form>
     </div>
     <div class="col-9 border border-3 rounded mt-3 overflow-auto p-0" style="height: 70vh">
-        <nav class="navbar navbar-expand-sm bg-dark navbar-dark" >
-            <div class="container-fluid" >
-                <c:url value="/categories/${category.id}" var="filterAction"/>             
-                <a class="navbar-brand" href="${filterAction}">Lessons</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="collapsibleNavbar">
-                    <ul class="navbar-nav">
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Skill</a>
-                            <ul class="dropdown-menu">
-                                <c:forEach items="${skills}" var="skill">
-                                    <c:url value="/categories/${category.id}" var="filterAction">
-                                        <c:param name="skill" value="${skill}" />
-                                        <c:if test="${not empty param.kw}">
-                                            <c:param name="kw" value="${param.kw}" />
-                                        </c:if>   
-                                    </c:url>
-                                    <li>
-                                        <a class="dropdown-item" href="${filterAction}">${skill.label}</a>
-                                    </li>
-                                </c:forEach>
+        <c:choose>
+            <c:when test="${category.id != null}">
+                <nav class="navbar navbar-expand-sm bg-dark navbar-dark" >
+                    <div class="container-fluid" >
+                        <c:url value="/categories/${category.id}" var="filterAction"/>             
+                        <a class="navbar-brand" href="${filterAction}">Lessons</a>
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <div class="collapse navbar-collapse" id="collapsibleNavbar">
+                            <ul class="navbar-nav">
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Skill</a>
+                                    <ul class="dropdown-menu">
+                                        <c:forEach items="${skills}" var="skill">
+                                            <c:url value="/categories/${category.id}" var="filterAction">
+                                                <c:param name="skill" value="${skill}" />
+                                                <c:if test="${not empty param.kw}">
+                                                    <c:param name="kw" value="${param.kw}" />
+                                                </c:if>   
+                                            </c:url>
+                                            <li>
+                                                <a class="dropdown-item" href="${filterAction}">${skill.label}</a>
+                                            </li>
+                                        </c:forEach>
+                                    </ul>
+                                </li>
+                                <c:url value="/categories/${category.id}/lessons" var="lessonAction" />
+                                <li class="nav-item"><a class="nav-link" href="${lessonAction}">Add Lesson</a></li>
                             </ul>
-                        </li>
-                        <c:url value="/lessons" var="lessonsAction" />
-                        <li class="nav-item"><a class="nav-link" href="#">Add Lesson</a></li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-        <div class="ps-2 pe-2">
-            <c:choose>
-                <c:when test="${category.id != null}">
+                        </div>
+                    </div>
+                </nav>
+                <div class="ps-2 pe-2">
+
                     <table class="table table-hover">
                         <thead>
                             <tr>
@@ -103,7 +96,7 @@
                                     <td>${l.lessonTypeId.skill.label}</td>
                                     <td>${l.lessonTypeId.name}</td>
                                     <td>
-                                        <a href="#" class="btn btn-success mb-1">Chi tiết</a>
+                                        <a href="<c:url value="/categories/${category.id}/lessons/${l.id}" />" class="btn btn-success mb-1">Chi tiết</a>
                                         <button class="btn btn-danger mb-1">Xóa</button>
                                     </td>
                                 </tr>
@@ -127,16 +120,16 @@
                                             <c:param name="skill" value="${param.skill}" />
                                         </c:if>
                                     </c:url>
-                                    <li class="page-item">
-                                        <a href="${pageAction}" class="${i == param.page ? 'active' : ''} page-link">${i}</a>
+                                    <li class="page-item ${i == param.page ? 'active' : ''}">
+                                        <a href="${pageAction}" class="page-link">${i}</a>
                                     </li>
                                 </c:forEach>
                             </c:if>
                         </ul>
                     </div>
-                </c:when>
-            </c:choose>
-        </div>
+                </div>
+            </c:when>
+        </c:choose>
     </div>
 </div>
 

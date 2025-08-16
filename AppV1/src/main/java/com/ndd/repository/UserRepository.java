@@ -4,10 +4,12 @@
  */
 package com.ndd.repository;
 
+import com.ndd.pojo.User;
+
 /**
  *
  * @author Admin
  */
 public interface UserRepository {
-    
+    User getUserByEmail(String email);
 }

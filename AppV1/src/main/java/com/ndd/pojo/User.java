@@ -4,6 +4,7 @@
  */
 package com.ndd.pojo;
 
+import com.ndd.enums.UserRole;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
@@ -11,6 +12,8 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -76,7 +79,8 @@ public class User implements Serializable {
     @NotNull
     @Size(min = 1, max = 5)
     @Column(name = "role")
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 150)
@@ -112,7 +116,7 @@ public class User implements Serializable {
         this.id = id;
     }
 
-    public User(Integer id, String firstName, String lastName, String email, String password, String role, String avatarUrl, Date createdDate, Date updatedDate) {
+    public User(Integer id, String firstName, String lastName, String email, String password, UserRole role, String avatarUrl, Date createdDate, Date updatedDate) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -164,11 +168,11 @@ public class User implements Serializable {
         this.password = password;
     }
 
-    public String getRole() {
+    public UserRole getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(UserRole role) {
         this.role = role;
     }
 

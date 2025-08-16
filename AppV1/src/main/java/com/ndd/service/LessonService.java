@@ -13,7 +13,16 @@ import java.util.Map;
  * @author Admin
  */
 public interface LessonService {
+
     List<Lesson> getLessonsByCategoryId(int categoryId, Map<String, String> params);
-    
+
     long countLessonsByCategoryId(int categoryId, Map<String, String> params);
+
+    List<Lesson> getLessons(Map<String, String> params);
+
+    long countLessons(Map<String, String> params);
+
+    boolean addOrUpdateLesson(Lesson l);
+
+    Lesson getLessonById(int id);
 }

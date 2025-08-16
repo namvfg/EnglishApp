@@ -2,15 +2,14 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.ndd.repository.impl;
+package com.ndd.configs;
 
-import org.springframework.stereotype.Repository;
+import org.springframework.security.web.context.AbstractSecurityWebApplicationInitializer;
 
 /**
  *
  * @author Admin
  */
-@Repository
-public class StatsRepositoryImpl {
+public class SecurityWebApplicationInitializer extends AbstractSecurityWebApplicationInitializer{
     
 }

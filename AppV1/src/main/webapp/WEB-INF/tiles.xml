@@ -8,6 +8,8 @@
         <put-attribute name="title" value="" />
         <put-attribute name="header" 
                        value="/WEB-INF/layout/header.jsp" />
+        <put-attribute name="toast" 
+                       value="/WEB-INF/layout/toast.jsp" />
         <put-attribute name="content" value="" />
         <put-attribute name="footer" 
                        value="/WEB-INF/layout/footer.jsp" />
@@ -23,9 +25,20 @@
                        value="/WEB-INF/pages/category.jsp" />
     </definition>
     <definition name="lessons" extends="baseLayout">
+        <put-attribute name="extraHead" value="/WEB-INF/layout/head/lesson-head.jsp" />
         <put-attribute name="title" value="Lesson" />
         <put-attribute name="content" 
                        value="/WEB-INF/pages/lesson.jsp" />
+    </definition>
+    <definition name="sections" extends="baseLayout">
+        <put-attribute name="title" value="Section" />
+        <put-attribute name="content" 
+                       value="/WEB-INF/pages/section.jsp" />
+    </definition>
+     <definition name="login" extends="baseLayout">
+        <put-attribute name="title" value="Login" />
+        <put-attribute name="content" 
+                       value="/WEB-INF/pages/login.jsp" />
     </definition>
 </tiles-definitions>
 

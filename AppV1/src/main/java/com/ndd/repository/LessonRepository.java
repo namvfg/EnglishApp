@@ -17,9 +17,17 @@ import javax.persistence.criteria.Root;
  */
 public interface LessonRepository {
 
-    List<Lesson> getLessonsByCategoryId(int categoryId, Map<String, String> params);
+    List<Lesson> getLessonsByCategoryId(Integer categoryId, Map<String, String> params);
 
-    Predicate[] buildLessonPredicates(CriteriaBuilder b, Root<Lesson> root, int categoryId, Map<String, String> params);
+    Predicate[] buildLessonPredicates(CriteriaBuilder b, Root<Lesson> root, Integer categoryId, Map<String, String> params);
     
-    long countLessonsByCategoryId(int categoryId, Map<String, String> params);
+    List<Lesson> getLessons(Map<String, String> params);
+            
+    long countLessons(Map<String, String> params);
+    
+    long countLessonsByCategoryId(Integer categoryId, Map<String, String> params);
+    
+    boolean addOrUpdateLesson(Lesson l);
+    
+    Lesson getLessonById(Integer id);
 }

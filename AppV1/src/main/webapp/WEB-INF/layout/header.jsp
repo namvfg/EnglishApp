@@ -19,17 +19,35 @@
                 <li class="nav-item">
                     <a class="nav-link" href="${action}">Trang chủ</a>
                 </li>
-                <c:forEach items="${categoryTypes}" var="ct">
-                    <c:url value="/" var="cateTypeAction">
-                        <c:param name="cateTypeId" value="${ct.id}" />
-                        <c:if test="${not empty param.kw}">
-                            <c:param name="kw" value="${param.kw}" />
-                        </c:if>                  
-                    </c:url> 
-                    <li class="nav-item">
-                        <a class="nav-link" href="${cateTypeAction}">${ct.name}</a>
-                    </li>
-                </c:forEach>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Category Type</a>
+                    <ul class="dropdown-menu">
+                        <c:forEach items="${categoryTypes}" var="ct">
+                            <c:url value="/" var="cateTypeAction">
+                                <c:param name="cateTypeId" value="${ct.id}" />
+                                <c:if test="${not empty param.kw}">
+                                    <c:param name="kw" value="${param.kw}" />
+                                </c:if>                  
+                            </c:url> 
+                            <li>
+                                <a class="dropdown-item" href="${cateTypeAction}">${ct.name}</a>
+                            </li>
+                        </c:forEach>
+
+                    </ul>
+                </li>
+                <c:choose>
+                    <c:when test="${pageContext.request.userPrincipal.name != null}">
+                        <li class="nav-item">
+                            <a class='nav-link' href="<c:url value="/" />">${pageContext.request.userPrincipal.name}</a>
+                        </li>
+                    </c:when>
+                    <c:otherwise>
+                        <li class="nav-item">
+                            <a class='nav-link' href="<c:url value="/login" />">Login</a>
+                        </li>
+                    </c:otherwise>
+                </c:choose>
             </ul>
             <form class="d-flex" action="${action}">
                 <c:if test="${not empty param.cateTypeId}">

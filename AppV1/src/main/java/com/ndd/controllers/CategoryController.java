@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  *
@@ -31,10 +32,10 @@ public class CategoryController {
 
     @Autowired
     private CategoryService categoryService;
-    
+
     @Autowired
     private LessonService lessonService;
-    
+
     @Autowired
     private Environment env;
 
@@ -43,13 +44,13 @@ public class CategoryController {
         model.addAttribute("category", new Category());
         return "categories";
     }
-    
+
     @GetMapping("/categories/{id}")
     public String update(Model model, @PathVariable(value = "id") int id, @RequestParam Map<String, String> params) {
         model.addAttribute("category", this.categoryService.getCategoryById(id));
         model.addAttribute("skills", Skill.values());
         model.addAttribute("lessons", this.lessonService.getLessonsByCategoryId(id, params));
-        
+
         //phan trang
         long total = this.lessonService.countLessonsByCategoryId(id, params);
         long pageSize = Long.parseLong(env.getProperty("PAGE_SIZE"));
@@ -59,7 +60,9 @@ public class CategoryController {
     }
 
     @PostMapping("/categories")
-    public String add(@ModelAttribute(value = "category") @Valid Category c, BindingResult rs) {
+    public String add(@ModelAttribute(value = "category") @Valid Category c,
+            BindingResult rs,
+            RedirectAttributes redirectAttributes) {
         if (!rs.hasErrors()) {
             Date now = new Date();
             if (c.getId() == null) {
@@ -72,9 +75,13 @@ public class CategoryController {
             }
 
             if (this.categoryService.addOrUpdateCategory(c)) {
-                return "redirect:/";
+                redirectAttributes.addFlashAttribute("toastMessage", "Add category successfully");
+                redirectAttributes.addFlashAttribute("toastType", "success");
+                return "redirect:/categories";
             }
         }
+        redirectAttributes.addFlashAttribute("toastMessage", "Add category unsuccessfully");
+        redirectAttributes.addFlashAttribute("toastType", "error");
         return "categories";
     }
 }

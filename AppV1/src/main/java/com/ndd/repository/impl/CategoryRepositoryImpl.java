@@ -112,7 +112,6 @@ public class CategoryRepositoryImpl implements CategoryRepository {
     @Override
     public boolean addOrUpdateCategory(Category c) {
         Session session = this.factory.getObject().getCurrentSession();
-
         try {
             session.merge(c);
             return true;
@@ -125,8 +124,6 @@ public class CategoryRepositoryImpl implements CategoryRepository {
     @Override
     public Category getCategoryById(int id) {
         Session session = this.factory.getObject().getCurrentSession();
-        Query q = session.createNamedQuery("Category.findById", Category.class);
-        q.setParameter("id", id);
-        return (Category) q.getSingleResult();
+        return session.get(Category.class, id);
     }
 }

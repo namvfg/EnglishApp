@@ -1,0 +1,16 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : Aug 8, 2025, 4:40:15 PM
+    Author     : Admin
+*/
+.ck-editor__editable {
+    min-height: 300px;
+    max-height: 60vh;
+}
+
+.ck-editor {
+    max-width: 100%;   /* giới hạn chiều rộng */
+}

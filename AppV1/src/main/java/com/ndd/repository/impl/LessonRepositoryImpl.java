@@ -5,6 +5,7 @@
 package com.ndd.repository.impl;
 
 import com.ndd.enums.Skill;
+import com.ndd.pojo.Category;
 import com.ndd.pojo.Lesson;
 import com.ndd.repository.LessonRepository;
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,10 +36,12 @@ public class LessonRepositoryImpl implements LessonRepository {
     private Environment env;
 
     @Override
-    public Predicate[] buildLessonPredicates(CriteriaBuilder b, Root<Lesson> root, int categoryId, Map<String, String> params) {
+    public Predicate[] buildLessonPredicates(CriteriaBuilder b, Root<Lesson> root, Integer categoryId, Map<String, String> params) {
         List<Predicate> predicates = new ArrayList<>();
 
-        predicates.add(b.equal(root.get("categoryId").get("id"), categoryId));
+        if (categoryId != null) {
+            predicates.add(b.equal(root.get("categoryId").get("id"), categoryId));
+        }
 
         if (params != null) {
             String kw = params.get("kw");
@@ -57,7 +61,47 @@ public class LessonRepositoryImpl implements LessonRepository {
     }
 
     @Override
-    public List<Lesson> getLessonsByCategoryId(int categoryId, Map<String, String> params) {
+    public List<Lesson> getLessons(Map<String, String> params) {
+        Session session = this.factory.getObject().getCurrentSession();
+        CriteriaBuilder b = session.getCriteriaBuilder();
+        CriteriaQuery<Lesson> q = b.createQuery(Lesson.class);
+        Root<Lesson> rL = q.from(Lesson.class);
+
+        Predicate[] filters = buildLessonPredicates(b, rL, null, params); // null categoryId
+        q.select(rL).where(filters);
+        q.orderBy(b.asc(rL.get("id")));
+
+        Query<Lesson> query = session.createQuery(q);
+
+        if (params != null) {
+            String page = params.get("page");
+            if (page != null && !page.isEmpty()) {
+                int pageNum = Integer.parseInt(page);
+                int pageSize = Integer.parseInt(this.env.getProperty("PAGE_SIZE"));
+                query.setMaxResults(pageSize);
+                query.setFirstResult((pageNum - 1) * pageSize);
+            }
+        }
+
+        return query.getResultList();
+    }
+
+    @Override
+    public long countLessons(Map<String, String> params) {
+        Session session = this.factory.getObject().getCurrentSession();
+        CriteriaBuilder b = session.getCriteriaBuilder();
+        CriteriaQuery<Long> q = b.createQuery(Long.class);
+        Root<Lesson> rL = q.from(Lesson.class);
+        q.select(b.count(rL));
+
+        Predicate[] filters = buildLessonPredicates(b, rL, null, params);
+        q.where(filters);
+
+        return session.createQuery(q).getSingleResult();
+    }
+
+    @Override
+    public List<Lesson> getLessonsByCategoryId(Integer categoryId, Map<String, String> params) {
         Session session = this.factory.getObject().getCurrentSession();
         CriteriaBuilder b = session.getCriteriaBuilder();
         CriteriaQuery<Lesson> q = b.createQuery(Lesson.class);
@@ -84,7 +128,7 @@ public class LessonRepositoryImpl implements LessonRepository {
     }
 
     @Override
-    public long countLessonsByCategoryId(int categoryId, Map<String, String> params) {
+    public long countLessonsByCategoryId(Integer categoryId, Map<String, String> params) {
         Session session = this.factory.getObject().getCurrentSession();
         CriteriaBuilder b = session.getCriteriaBuilder();
         CriteriaQuery<Long> q = b.createQuery(Long.class);
@@ -95,5 +139,23 @@ public class LessonRepositoryImpl implements LessonRepository {
         q.where(filters);
 
         return session.createQuery(q).getSingleResult();
+    }
+
+    @Override
+    public boolean addOrUpdateLesson(Lesson l) {
+        Session session = this.factory.getObject().getCurrentSession();
+        try {
+            session.merge(l);
+            return true;
+        } catch (HibernateException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public Lesson getLessonById(Integer id) {
+        Session session = this.factory.getObject().getCurrentSession();
+        return session.get(Lesson.class, id);
     }
 }

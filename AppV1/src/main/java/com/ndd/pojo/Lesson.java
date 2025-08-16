@@ -23,10 +23,12 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  *
@@ -50,23 +52,23 @@ public class Lesson implements Serializable {
     @Column(name = "id")
     private Integer id;
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 255)
+    @NotNull(message = "{lesson.title.notNull}")
+    @Size(min = 5, max = 255, message = "{lesson.title.lenErr}")
     @Column(name = "title")
     private String title;
     @Basic(optional = false)
-    @NotNull
+    @Column(name = "image")
+    private String image;
+    @Basic(optional = false)
     @Lob
-    @Size(min = 1, max = 65535)
+    @Size(min = 1, max = 65535, message = "Content must not be empty")
     @Column(name = "content")
     private String content;
     @Basic(optional = false)
-    @NotNull
     @Column(name = "created_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdDate;
     @Basic(optional = false)
-    @NotNull
     @Column(name = "updated_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedDate;
@@ -81,6 +83,9 @@ public class Lesson implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "lessonId")
     private Set<PracticeSession> practiceSessionSet;
 
+    @Transient
+    private MultipartFile file;
+
     public Lesson() {
     }
 
@@ -88,9 +93,10 @@ public class Lesson implements Serializable {
         this.id = id;
     }
 
-    public Lesson(Integer id, String title, String content, Date createdDate, Date updatedDate) {
+    public Lesson(Integer id, String title, String image, String content, Date createdDate, Date updatedDate) {
         this.id = id;
         this.title = title;
+        this.image = image;
         this.content = content;
         this.createdDate = createdDate;
         this.updatedDate = updatedDate;
@@ -194,5 +200,33 @@ public class Lesson implements Serializable {
     public String toString() {
         return "com.ndd.pojo.Lesson[ id=" + id + " ]";
     }
-    
+
+    /**
+     * @return the image
+     */
+    public String getImage() {
+        return image;
+    }
+
+    /**
+     * @param image the image to set
+     */
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    /**
+     * @return the file
+     */
+    public MultipartFile getFile() {
+        return file;
+    }
+
+    /**
+     * @param file the file to set
+     */
+    public void setFile(MultipartFile file) {
+        this.file = file;
+    }
+
 }

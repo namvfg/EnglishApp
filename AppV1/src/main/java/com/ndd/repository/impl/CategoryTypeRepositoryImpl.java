@@ -5,8 +5,12 @@
 package com.ndd.repository.impl;
 
 import com.ndd.pojo.CategoryType;
+import com.ndd.pojo.LessonType;
 import com.ndd.repository.CategoryTypeRepository;
 import java.util.List;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +28,12 @@ public class CategoryTypeRepositoryImpl implements CategoryTypeRepository{
     private LocalSessionFactoryBean factory;
     
     @Override
-    public List<CategoryType> getCategoryTypes() {
-        Session session = this.factory.getObject().openSession();
-        Query query = session.createNamedQuery("CategoryType.findAll", CategoryType.class);
-        return query.getResultList();
+    public List<CategoryType> getCategoryTypes() { 
+        Session session = this.factory.getObject().getCurrentSession();
+        CriteriaBuilder b = session.getCriteriaBuilder();
+        CriteriaQuery<CategoryType> q = b.createQuery(CategoryType.class);
+        Root root = q.from(CategoryType.class);
+        q.select(root);
+        return session.createQuery(q).getResultList();
     }
 }

@@ -11,7 +11,7 @@
 <section class="container">
     <div class="mt-2">
         <c:url value="/categories" var="categoriesAction" />
-        <a href="${categoriesAction}" class="btn btn-info">Thêm danh muc</a>
+        <a href="${categoriesAction}" class="btn btn-info">Add Category</a>
     </div>
     <div class="mt-2">
         <ul class="pagination">
@@ -29,8 +29,8 @@
                             <c:param name="cateTypeId" value="${param.cateTypeId}" />
                         </c:if>
                     </c:url>
-                    <li class="page-item">
-                        <a href="${pageAction}" class="${i == param.page ? 'active' : ''} page-link">${i}</a>
+                    <li class="page-item ${i == param.page ? 'active' : ''}">
+                        <a href="${pageAction}" class="page-link">${i}</a>
                     </li>
                 </c:forEach>
             </c:if>
@@ -55,8 +55,8 @@
                     <td>${c.createdDate}</td>
                     <td>${c.updatedDate}</td>
                     <td>
-                        <a href="<c:url value="/categories/${c.id}"/>" class="btn btn-success mb-1">Cập nhật</a>
-                        <button class="btn btn-danger mb-1">Xóa</button>
+                        <a href="<c:url value="/categories/${c.id}"/>" class="btn btn-success mb-1">Update</a>
+                        <button class="btn btn-danger mb-1">Delete</button>
                     </td>
                 </tr>
             </c:forEach>
