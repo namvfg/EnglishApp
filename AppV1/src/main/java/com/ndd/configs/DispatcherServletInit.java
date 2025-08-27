@@ -4,6 +4,10 @@
  */
 package com.ndd.configs;
 
+import javax.servlet.FilterRegistration;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 /**
@@ -18,7 +22,12 @@ public class DispatcherServletInit extends AbstractAnnotationConfigDispatcherSer
             HibernateConfig.class,
             TilesConfig.class,
             R2Config.class,
-            SpringSecurityConfig.class
+            SpringSecurityConfig.class,
+            RedisConfig.class,
+            MailConfig.class,
+            CloudinaryConfig.class,
+            GeminiConfig.class,
+            HttpConfig.class
         };
     }
 
@@ -33,8 +42,16 @@ public class DispatcherServletInit extends AbstractAnnotationConfigDispatcherSer
     protected String[] getServletMappings() {
         return new String[]{"/"};
     }
-    
-    
 
+    @Override
+    public void onStartup(ServletContext servletContext) throws ServletException {
+        super.onStartup(servletContext);
+        CharacterEncodingFilter encodingFilter = new CharacterEncodingFilter();
+        encodingFilter.setEncoding("UTF-8");
+        encodingFilter.setForceEncoding(true);
+
+        FilterRegistration.Dynamic filter = servletContext.addFilter("encodingFilter", encodingFilter);
+        filter.addMappingForUrlPatterns(null, false, "/*");
+    }
 
 }

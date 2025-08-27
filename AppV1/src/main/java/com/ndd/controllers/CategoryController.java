@@ -84,4 +84,18 @@ public class CategoryController {
         redirectAttributes.addFlashAttribute("toastType", "error");
         return "categories";
     }
+
+    @GetMapping("/categories/{id}/delete")
+    public String deleteCategory(@PathVariable("id") int id, RedirectAttributes redirectAttributes) {
+        boolean deleted = categoryService.deleteCategoryById(id);
+
+        if (deleted) {
+            redirectAttributes.addFlashAttribute("toastMessage", "Xóa thành công");
+            redirectAttributes.addFlashAttribute("toastType", "success");
+        } else {
+            redirectAttributes.addFlashAttribute("toastMessage", "Không tìm thấy category");
+            redirectAttributes.addFlashAttribute("toastType", "error");
+        }
+        return "redirect:/";
+    }
 }

@@ -75,9 +75,9 @@ public class UserSpeakingAnswer implements Serializable {
     @Column(name = "updated_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedDate;
-    @JoinColumn(name = "exercise_id", referencedColumnName = "id")
+    @JoinColumn(name = "lesson_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
-    private Exercise exerciseId;
+    private Lesson lessonId;
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private User userId;
@@ -160,12 +160,12 @@ public class UserSpeakingAnswer implements Serializable {
         this.updatedDate = updatedDate;
     }
 
-    public Exercise getExerciseId() {
-        return exerciseId;
+    public Lesson getLessonId() {
+        return lessonId;
     }
 
-    public void setExerciseId(Exercise exerciseId) {
-        this.exerciseId = exerciseId;
+    public void setLessonId(Lesson lessonId) {
+        this.lessonId = lessonId;
     }
 
     public User getUserId() {

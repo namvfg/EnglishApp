@@ -32,74 +32,11 @@ import org.springframework.web.server.ResponseStatusException;
 @Controller
 public class SectionController {
 
-    @Autowired
-    private CategoryService categoryService;
-    @Autowired
-    private LessonService lessonService;
-    @Autowired
-    private SectionService sectionService;
-    @Autowired
-    private SectionTypeService sectionTypeService;
-
     @GetMapping("/categories/{cateId}/lessons/{lessonId}/sections/{id}")
     public String list(Model model,
             @PathVariable(value = "cateId") int cateId,
             @PathVariable(value = "lessonId") int lessonId) {
         return "sections";
-    }
-
-    @PostMapping("/api/sections")
-    public ResponseEntity<SectionDTO> create(@RequestBody @Valid SectionDTO req) {
-        var sectionType = this.sectionTypeService.getSectionTypeById(req.getSectionTypeId());
-        if (sectionType == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "SectionType không tồn tại");
-        }
-
-        var lesson = this.lessonService.getLessonById(req.getLessonId());
-        if (lesson == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Lesson không tồn tại");
-        }
-
-        var s = new Section();
-        s.setSectionTypeId(sectionType);
-        s.setContent(req.getContent());
-        s.setLessonId(lesson);
-
-        Date now = new Date();
-        s.setCreatedDate(now);
-        s.setUpdatedDate(now);
-
-        boolean ok = sectionService.addOrUpdateSection(s);
-        if (!ok) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Không lưu được section");
-        }
-
-        return ResponseEntity.ok(new SectionDTO(s.getId(), s.getSectionTypeId().getId(), s.getSectionTypeId().getName(), s.getLessonId().getId(), s.getContent()));
-    }
-
-    @PutMapping("/api/sections/{id}")
-    public ResponseEntity<SectionDTO> update(@PathVariable int id, @RequestBody @Valid SectionDTO req) {
-        var s = this.sectionService.getSectionById(id);
-        if (s == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Section không tồn tại");
-        }
-
-        var sectionType = this.sectionTypeService.getSectionTypeById(req.getSectionTypeId());
-        if (sectionType == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "SectionType không tồn tại");
-        }
-
-        s.setSectionTypeId(sectionType);
-        s.setContent(req.getContent());
-        Date now = new Date();        
-        s.setUpdatedDate(now);
-
-        boolean ok = this.sectionService.addOrUpdateSection(s);
-        if (!ok) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Không lưu được section");
-        }
-
-        return ResponseEntity.ok(new SectionDTO(s.getId(), s.getSectionTypeId().getId(), s.getSectionTypeId().getName(), s.getLessonId().getId(), s.getContent()));
     }
 
 }

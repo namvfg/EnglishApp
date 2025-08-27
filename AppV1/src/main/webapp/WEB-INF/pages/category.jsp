@@ -96,8 +96,12 @@
                                     <td>${l.lessonTypeId.skill.label}</td>
                                     <td>${l.lessonTypeId.name}</td>
                                     <td>
-                                        <a href="<c:url value="/categories/${category.id}/lessons/${l.id}" />" class="btn btn-success mb-1">Chi tiết</a>
-                                        <button class="btn btn-danger mb-1">Xóa</button>
+                                        <a href="<c:url value='/categories/${category.id}/lessons/${l.id}' />" class="btn btn-success mb-1">Chi tiết</a>
+                                        <a href="<c:url value='/categories/${category.id}/lessons/${l.id}/delete' />" 
+                                           class="btn btn-danger mb-1"
+                                           onclick="return confirm('Bạn có chắc chắn muốn xóa lesson này không?');">
+                                            Xóa
+                                        </a>
                                     </td>
                                 </tr>
                             </c:forEach>

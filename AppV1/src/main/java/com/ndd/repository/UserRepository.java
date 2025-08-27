@@ -12,4 +12,10 @@ import com.ndd.pojo.User;
  */
 public interface UserRepository {
     User getUserByEmail(String email);
+    
+    boolean authUser(String email, String password);
+    
+    boolean addUser(User user);
+    
+    User getUserById(int id);
 }

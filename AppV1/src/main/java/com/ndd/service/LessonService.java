@@ -25,4 +25,6 @@ public interface LessonService {
     boolean addOrUpdateLesson(Lesson l);
 
     Lesson getLessonById(int id);
+    
+    boolean deleteLessonById(Integer id);
 }

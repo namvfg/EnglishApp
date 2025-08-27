@@ -4,8 +4,6 @@
  */
 package com.ndd.configs;
 
-import com.cloudinary.Cloudinary;
-import com.cloudinary.utils.ObjectUtils;
 import java.util.Arrays;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +11,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -21,11 +18,9 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.cors.CorsConfiguration;
@@ -43,27 +38,16 @@ import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 @ComponentScan(basePackages = {
     "com.ndd.controllers",
     "com.ndd.repository",
-    "com.ndd.service",})
+    "com.ndd.service",
+    "com.ndd.components"})
 public class SpringSecurityConfig {
 
     @Autowired
     private UserDetailsService userDetailsService;
 
-    @Autowired
-    private Environment env;
-
     @Bean
     public HandlerMappingIntrospector mvcHandlerMappingIntrospector(ApplicationContext context) {
         return new HandlerMappingIntrospector(context);
-    }
-
-    //nguoi dung trong bo nho
-    @Bean
-    public UserDetailsService userDetailsService(PasswordEncoder pe) {
-        return new InMemoryUserDetailsManager(
-                User.withUsername("admin@gmail.com").password(pe.encode("123456")).roles("ADMIN").build(),
-                User.withUsername("user@gmail.com").password(pe.encode("123456")).roles("USER").build()
-        );
     }
 
     //ma hoa password
@@ -143,16 +127,4 @@ public class SpringSecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
-
-    @Bean
-    public Cloudinary cloudinary() {
-        Cloudinary cloudinary
-                = new Cloudinary(ObjectUtils.asMap(
-                        "cloud_name", this.env.getProperty("cloudinary.cloud_name"),
-                        "api_key", this.env.getProperty("cloudinary.api_id"),
-                        "api_secret", this.env.getProperty("cloudinary.api_secret"),
-                        "secure", true));
-        return cloudinary;
-    }
-
 }

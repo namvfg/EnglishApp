@@ -30,4 +30,6 @@ public interface LessonRepository {
     boolean addOrUpdateLesson(Lesson l);
     
     Lesson getLessonById(Integer id);
+    
+    boolean deleteLessonById(Integer id);
 }

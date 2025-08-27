@@ -26,5 +26,6 @@ public interface CategoryRepository {
     Predicate[] buildCategoryPredicates(CriteriaBuilder b, Root root, Map<String, String> params);
 
     boolean addOrUpdateCategory(Category c);
-
+   
+    boolean deleteCategoryById(int id);
 }

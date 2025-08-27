@@ -4,21 +4,17 @@
  */
 package com.ndd.configs;
 
-import com.cloudinary.Cloudinary;
-import com.cloudinary.utils.ObjectUtils;
 import com.ndd.formatters.CategoryFormatter;
 import com.ndd.formatters.CategoryTypeFormatter;
 import com.ndd.formatters.LessonTypeFormatter;
 import com.ndd.formatters.SectionTypeFormatter;
 import java.text.SimpleDateFormat;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.ResourceBundleMessageSource;
-import org.springframework.core.env.Environment;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.validation.Validator;
@@ -39,7 +35,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @ComponentScan(basePackages = {
     "com.ndd.controllers",
     "com.ndd.repository",
-    "com.ndd.service"
+    "com.ndd.service",
+    "com.ndd.components"
 })
 @PropertySource("classpath:configs.properties")
 public class WebAppContextConfig implements WebMvcConfigurer {
@@ -95,6 +92,10 @@ public class WebAppContextConfig implements WebMvcConfigurer {
         resolver.setMaxUploadSize(52428800); // 5MB
         return resolver;
     }
+    
+    
+    
+    
 
 //    @Bean
 //    public InternalResourceViewResolver internalResourceViewResolver() {

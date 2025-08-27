@@ -11,6 +11,33 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css
     max-height: 60vh;
 }
 
+.modal-body {
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+.ck-editor__editable img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto; /* nếu muốn căn giữa */
+}
+
 .ck-editor {
     max-width: 100%;   /* giới hạn chiều rộng */
+}
+
+.ckeditor-preview img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+.section-card .card-body {
+    overflow: hidden;
+}
+
+.ckeditor-preview {
+    max-height: 100px;
+    overflow: hidden;
 }

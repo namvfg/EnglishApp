@@ -12,5 +12,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
  * @author Admin
  */
 public interface UserService extends UserDetailsService{
+   boolean authUser(String email, String password);
    
+   boolean addUser(User user);
+   
+   User getUserByEmail(String email);
+   
+   User getUserById(int id);
 }

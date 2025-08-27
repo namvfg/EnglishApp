@@ -77,7 +77,6 @@ public class User implements Serializable {
     private String password;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 5)
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
     private UserRole role;

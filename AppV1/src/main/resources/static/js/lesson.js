@@ -73,8 +73,11 @@ skillEl.addEventListener('change', function () {
             ClassicEditor.create(contentEl, {
                 toolbar: [
                     'heading', '|', 'bold', 'italic', 'underline', 'link', 'bulletedList', 'numberedList',
-                    '|', 'blockQuote', 'insertTable', 'undo', 'redo'
-                ]
+                    '|', 'blockQuote', 'insertTable', 'undo', 'redo', '|', 'imageUpload'
+                ],
+                ckfinder: {
+                    uploadUrl: `${contextPath}/api/ckeditor/upload-image`
+                }
             }).then(ed => editorInstance = ed)
                     .catch(console.error);
         }
@@ -109,114 +112,121 @@ const secformEl = document.getElementById('sectionForm');
 let secEditorInstance = null;
 let pendingContent = ''; // lưu tạm nội dung cần set vào editor
 
-// Tạo editor (nếu chưa có) khi modal hiển thị xong
-modalEl.addEventListener('shown.bs.modal', async () => {
-    if (!secEditorInstance) {
-        secEditorInstance = await ClassicEditor.create(secContentEl, {
-            toolbar: [
-                'heading', '|', 'bold', 'italic', 'underline', 'link', 'bulletedList', 'numberedList',
-                '|', 'blockQuote', 'insertTable', 'undo', 'redo'
-            ]
-        });
-    }
-    // Đồng bộ nội dung vào editor sau khi chắc chắn đã có instance
-    secEditorInstance.setData(pendingContent || secContentEl.value || '');
-    // Focus editor thay vì focus textarea
-    secEditorInstance.editing.view.focus();
-});
-
 // Chuẩn bị dữ liệu trước khi mở modal
-modalEl.addEventListener('show.bs.modal', (event) => {
-    const trigger = event.relatedTarget || null;
-    const mode = trigger?.dataset.mode || 'create';
-
-    if (mode === 'create') {
-        titleEl.textContent = 'Thêm section';
-        secIdEl.value = '';
-        secContentEl.value = '';
-        pendingContent = '';
-        if (sectionTypeEl)
-            sectionTypeEl.value = '';
-    } else {
-        titleEl.textContent = 'Sửa section';
-        secIdEl.value = trigger?.dataset.id || '';
-        const content = trigger?.dataset.content || '';
-        secContentEl.value = content;
-        pendingContent = content;
-
-        const sectionTypeId = trigger?.dataset.sectionTypeId || '';
-        if (sectionTypeEl) {
-            sectionTypeEl.value = sectionTypeId;
-            if (sectionTypeEl.value !== sectionTypeId)
-                sectionTypeEl.value = '';
+if (modalEl !== null) {
+// Tạo editor (nếu chưa có) khi modal hiển thị xong
+    modalEl.addEventListener('shown.bs.modal', async () => {
+        if (!secEditorInstance) {
+            secEditorInstance = await ClassicEditor.create(secContentEl, {
+                toolbar: [
+                    'heading', '|', 'bold', 'italic', 'underline', 'link', 'bulletedList', 'numberedList',
+                    '|', 'blockQuote', 'insertTable', 'undo', 'redo', '|', 'imageUpload'
+                ],
+                ckfinder: {
+                    uploadUrl: `${contextPath}/api/ckeditor/upload-image`
+                }
+            });
         }
-    }
+        // Đồng bộ nội dung vào editor sau khi chắc chắn đã có instance
+        secEditorInstance.setData(pendingContent || secContentEl.value || '');
+        // Focus editor thay vì focus textarea
+        secEditorInstance.editing.view.focus();
+    });
 
-    if (secEditorInstance)
-        secEditorInstance.setData(pendingContent);
-});
 
-modalEl.addEventListener('shown.bs.modal', function () {
-    secContentEl?.focus();
-});
+    modalEl.addEventListener('show.bs.modal', (event) => {
+        const trigger = event.relatedTarget || null;
+        const mode = trigger?.dataset.mode || 'create';
+
+        if (mode === 'create') {
+            titleEl.textContent = 'Thêm section';
+            secIdEl.value = '';
+            secContentEl.value = '';
+            pendingContent = '';
+            if (sectionTypeEl)
+                sectionTypeEl.value = '';
+        } else {
+            titleEl.textContent = 'Sửa section';
+            secIdEl.value = trigger?.dataset.id || '';
+            const content = trigger?.dataset.content || '';
+            secContentEl.value = content;
+            pendingContent = content;
+
+            const sectionTypeId = trigger?.dataset.sectionTypeId || '';
+            if (sectionTypeEl) {
+                sectionTypeEl.value = sectionTypeId;
+                if (sectionTypeEl.value !== sectionTypeId)
+                    sectionTypeEl.value = '';
+            }
+        }
+
+        if (secEditorInstance)
+            secEditorInstance.setData(pendingContent);
+    });
+
+    modalEl.addEventListener('shown.bs.modal', function () {
+        secContentEl?.focus();
+    });
 
 // Blur trước khi modal đóng để tránh cảnh báo aria-hidden
-modalEl.addEventListener('hide.bs.modal', function () {
-    if (document.activeElement && modalEl.contains(document.activeElement)) {
-        document.activeElement.blur();
-    }
-});
+    modalEl.addEventListener('hide.bs.modal', function () {
+        if (document.activeElement && modalEl.contains(document.activeElement)) {
+            document.activeElement.blur();
+        }
+    });
 
-document.addEventListener('hidden.bs.modal', function (event) {
-    // Remove the focus from the active element
-    if (document.activeElement) {
-        document.activeElement.blur();
-    }
-});
+    document.addEventListener('hidden.bs.modal', function (event) {
+        // Remove the focus from the active element
+        if (document.activeElement) {
+            document.activeElement.blur();
+        }
+    });
 
-secformEl.addEventListener('submit', async (e) => {
-    e.preventDefault();
+    secformEl.addEventListener('submit', async (e) => {
+        e.preventDefault();
 
-    if (window.secEditorInstance) {
-        secContentEl.value = secEditorInstance.getData();
-    }
-    if (!sectionTypeEl.value || !secContentEl.value.trim()) {
-        alert('Chọn Section type và nhập nội dung.');
-        return;
-    }
+        if (window.secEditorInstance) {
+            secContentEl.value = secEditorInstance.getData();
+        }
+        if (!sectionTypeEl.value || !secContentEl.value.trim()) {
+            alert('Chọn Section type và nhập nội dung.');
+            return;
+        }
 
-    const id = (secIdEl.value || '').trim();
-    const lessonId = document.querySelector('#lessonId').value; // HIDDEN trong form
+        const id = (secIdEl.value || '').trim();
+        const lessonId = document.querySelector('#lessonId').value; // HIDDEN trong form
 
-    const payload = {
-        lessonId: Number(lessonId), // <-- THÊM
-        sectionTypeId: Number(sectionTypeEl.value),
-        content: secContentEl.value
-    };
-    
-    const base = `${contextPath}/api/sections`;
-    const url = id ? `${base}/${id}` : base;
-    const method = id ? 'PUT' : 'POST';
+        const payload = {
+            lessonId: Number(lessonId), // <-- THÊM
+            sectionTypeId: Number(sectionTypeEl.value),
+            content: secContentEl.value
+        };
 
-    const headers = {'Content-Type': 'application/json;charset=utf-8'};
-    const csrf = document.querySelector('meta[name="_csrf"]')?.content;
-    const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.content;
-    if (csrf && csrfHeader)
-        headers[csrfHeader] = csrf;
+        const base = `${contextPath}/api/sections`;
+        const url = id ? `${base}/${id}` : base;
+        const method = id ? 'PUT' : 'POST';
 
-    console.log('[SUBMIT]', {url, method, payload});
+        const headers = {'Content-Type': 'application/json;charset=utf-8'};
+        const csrf = document.querySelector('meta[name="_csrf"]')?.content;
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.content;
+        if (csrf && csrfHeader)
+            headers[csrfHeader] = csrf;
 
-    const res = await fetch(url, {method, headers, body: JSON.stringify(payload), credentials: 'same-origin'});
-    console.log('HTTP', res.status, res.statusText);
+        console.log('[SUBMIT]', {url, method, payload});
 
-    if (!res.ok) {
-        const text = await res.text();
-        console.error('Error body:', text);
-        alert(`Lưu thất bại (${res.status})`);
-        return;
-    }
+        const res = await fetch(url, {method, headers, body: JSON.stringify(payload), credentials: 'same-origin'});
+        console.log('HTTP', res.status, res.statusText);
 
-    bootstrap.Modal.getInstance(document.getElementById('sectionModal'))?.hide();
-    location.reload();
-});
+        if (!res.ok) {
+            const text = await res.text();
+            console.error('Error body:', text);
+            alert(`Lưu thất bại (${res.status})`);
+            return;
+        }
+
+        bootstrap.Modal.getInstance(document.getElementById('sectionModal'))?.hide();
+        location.reload();
+    });
+
+}
 

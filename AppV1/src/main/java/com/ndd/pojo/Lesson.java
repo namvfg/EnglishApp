@@ -41,6 +41,7 @@ import org.springframework.web.multipart.MultipartFile;
     @NamedQuery(name = "Lesson.findAll", query = "SELECT l FROM Lesson l"),
     @NamedQuery(name = "Lesson.findById", query = "SELECT l FROM Lesson l WHERE l.id = :id"),
     @NamedQuery(name = "Lesson.findByTitle", query = "SELECT l FROM Lesson l WHERE l.title = :title"),
+    @NamedQuery(name = "Lesson.findByImage", query = "SELECT l FROM Lesson l WHERE l.image = :image"),
     @NamedQuery(name = "Lesson.findByCreatedDate", query = "SELECT l FROM Lesson l WHERE l.createdDate = :createdDate"),
     @NamedQuery(name = "Lesson.findByUpdatedDate", query = "SELECT l FROM Lesson l WHERE l.updatedDate = :updatedDate")})
 public class Lesson implements Serializable {
@@ -52,16 +53,18 @@ public class Lesson implements Serializable {
     @Column(name = "id")
     private Integer id;
     @Basic(optional = false)
-    @NotNull(message = "{lesson.title.notNull}")
-    @Size(min = 5, max = 255, message = "{lesson.title.lenErr}")
+    @NotNull
+    @Size(min = 1, max = 255)
     @Column(name = "title")
     private String title;
     @Basic(optional = false)
+    @Size(min = 1, max = 200)
     @Column(name = "image")
     private String image;
     @Basic(optional = false)
+    @NotNull
     @Lob
-    @Size(min = 1, max = 65535, message = "Content must not be empty")
+    @Size(min = 1, max = 65535)
     @Column(name = "content")
     private String content;
     @Basic(optional = false)
@@ -72,6 +75,8 @@ public class Lesson implements Serializable {
     @Column(name = "updated_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedDate;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "lessonId")
+    private Set<UserWritingAnswer> userWritingAnswerSet;
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Category categoryId;
@@ -81,8 +86,10 @@ public class Lesson implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "lessonId")
     private Set<Section> sectionSet;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "lessonId")
+    private Set<UserSpeakingAnswer> userSpeakingAnswerSet;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "lessonId")
     private Set<PracticeSession> practiceSessionSet;
-
+    
     @Transient
     private MultipartFile file;
 
@@ -118,6 +125,14 @@ public class Lesson implements Serializable {
         this.title = title;
     }
 
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
     public String getContent() {
         return content;
     }
@@ -140,6 +155,15 @@ public class Lesson implements Serializable {
 
     public void setUpdatedDate(Date updatedDate) {
         this.updatedDate = updatedDate;
+    }
+
+    @XmlTransient
+    public Set<UserWritingAnswer> getUserWritingAnswerSet() {
+        return userWritingAnswerSet;
+    }
+
+    public void setUserWritingAnswerSet(Set<UserWritingAnswer> userWritingAnswerSet) {
+        this.userWritingAnswerSet = userWritingAnswerSet;
     }
 
     public Category getCategoryId() {
@@ -165,6 +189,15 @@ public class Lesson implements Serializable {
 
     public void setSectionSet(Set<Section> sectionSet) {
         this.sectionSet = sectionSet;
+    }
+
+    @XmlTransient
+    public Set<UserSpeakingAnswer> getUserSpeakingAnswerSet() {
+        return userSpeakingAnswerSet;
+    }
+
+    public void setUserSpeakingAnswerSet(Set<UserSpeakingAnswer> userSpeakingAnswerSet) {
+        this.userSpeakingAnswerSet = userSpeakingAnswerSet;
     }
 
     @XmlTransient
@@ -202,20 +235,6 @@ public class Lesson implements Serializable {
     }
 
     /**
-     * @return the image
-     */
-    public String getImage() {
-        return image;
-    }
-
-    /**
-     * @param image the image to set
-     */
-    public void setImage(String image) {
-        this.image = image;
-    }
-
-    /**
      * @return the file
      */
     public MultipartFile getFile() {
@@ -228,5 +247,5 @@ public class Lesson implements Serializable {
     public void setFile(MultipartFile file) {
         this.file = file;
     }
-
+    
 }

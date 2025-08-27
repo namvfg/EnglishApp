@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,6 +37,7 @@ public class ApiCategoryController {
     private LessonService lessonService;
 
     @GetMapping("/categories")
+    @CrossOrigin
     public ResponseEntity<List<CategoryDTO>> list(@RequestParam Map<String, String> params) {
         List<Category> categories = categoryService.getCategories(params);
 
@@ -75,7 +77,8 @@ public class ApiCategoryController {
                 .map(l -> new LessonDTO(l.getId(), l.getTitle(), l.getImage(),
                 l.getContent(), l.getCreatedDate(), l.getUpdatedDate(),
                 l.getCategoryId().getId(), l.getCategoryId().getName(),
-                l.getLessonTypeId().getId(), l.getLessonTypeId().getName()))
+                l.getLessonTypeId().getId(), l.getLessonTypeId().getName(),
+                l.getLessonTypeId().getSkill().toString()))
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(result); // 200 ok + json

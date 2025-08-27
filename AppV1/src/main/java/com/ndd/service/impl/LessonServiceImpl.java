@@ -4,10 +4,10 @@
  */
 package com.ndd.service.impl;
 
-import com.cloudinary.Cloudinary;
-import com.cloudinary.utils.ObjectUtils;
+
 import com.ndd.pojo.Lesson;
 import com.ndd.repository.LessonRepository;
+import com.ndd.service.CloudinaryService;
 import com.ndd.service.LessonService;
 import java.io.IOException;
 import java.util.List;
@@ -29,7 +29,7 @@ public class LessonServiceImpl implements LessonService {
     @Autowired
     private LessonRepository lessonRepo;
     @Autowired
-    private Cloudinary cloudinary;
+    private CloudinaryService cloudinaryService;
 
     @Override
     public List<Lesson> getLessonsByCategoryId(int categoryId, Map<String, String> params) {
@@ -47,21 +47,12 @@ public class LessonServiceImpl implements LessonService {
             // Kiểm tra ảnh cũ
             Lesson old = (l.getId() != null) ? lessonRepo.getLessonById(l.getId()) : null;
             String oldImageUrl = (old != null) ? old.getImage() : null;
-            String oldPublicId = extractPublicIdFromUrl(oldImageUrl);
+            String oldPublicId = cloudinaryService.extractPublicIdFromUrl(oldImageUrl);
 
             // Nếu user upload ảnh mới
             if (l.getFile() != null && !l.getFile().isEmpty()) {
                 // Upload ảnh mới
-                Map uploadRes = cloudinary.uploader().upload(
-                        l.getFile().getBytes(),
-                        ObjectUtils.asMap(
-                                "resource_type", "image",
-                                "folder", "lessons", // gợi ý: gom theo thư mục
-                                "use_filename", true,
-                                "unique_filename", true,
-                                "overwrite", true
-                        )
-                );
+                Map uploadRes = cloudinaryService.uploadImage(l.getFile(), "lesson");
 
                 String newUrl = uploadRes.get("secure_url").toString();
                 String newPublicId = uploadRes.get("public_id").toString();
@@ -72,10 +63,7 @@ public class LessonServiceImpl implements LessonService {
                 // Xóa ảnh cũ sau khi upload mới OK (nếu có và khác ảnh mới)
                 if (oldPublicId != null && !oldPublicId.equals(newPublicId)) {
                     try {
-                        cloudinary.uploader().destroy(
-                                oldPublicId,
-                                ObjectUtils.asMap("invalidate", true, "resource_type", "image")
-                        );
+                        cloudinaryService.deleteImageByPublicId(oldPublicId);
                     } catch (Exception delEx) {
                         // Không fail giao dịch vì lỗi xóa ảnh cũ; chỉ log nếu cần
                         Logger.getLogger(getClass().getName()).log(Level.WARNING,
@@ -94,28 +82,10 @@ public class LessonServiceImpl implements LessonService {
         } catch (IOException ex) {
             Logger.getLogger(LessonServiceImpl.class.getName()).log(Level.SEVERE, "Cloudinary upload failed", ex);
             return false;
+        } catch (Exception ex) {
+            Logger.getLogger(LessonServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
-
-    private String extractPublicIdFromUrl(String url) {
-        if (url == null || url.isBlank()) {
-            return null;
-        }
-        try {
-            String path = new java.net.URI(url).getPath(); // /<cloud>/image/upload/v12345/lessons/abc.png
-            int uploadIdx = path.indexOf("/upload/");
-            if (uploadIdx == -1) {
-                return null;
-            }
-            String after = path.substring(uploadIdx + "/upload/".length()); // v12345/lessons/abc.png
-            // bỏ "v<digits>/" nếu có
-            after = after.replaceFirst("^v\\d+/", "");
-            // bỏ phần mở rộng
-            int dot = after.lastIndexOf('.');
-            return (dot > 0) ? after.substring(0, dot) : after;
-        } catch (Exception e) {
-            return null;
-        }
+        return false;
     }
 
     @Override
@@ -131,5 +101,10 @@ public class LessonServiceImpl implements LessonService {
     @Override
     public long countLessons(Map<String, String> params) {
         return this.lessonRepo.countLessons(params);
+    }
+
+    @Override
+    public boolean deleteLessonById(Integer id) {
+        return this.lessonRepo.deleteLessonById(id);
     }
 }

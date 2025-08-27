@@ -21,11 +21,12 @@ public class LessonDTO {
     private String categoryName;
     private Integer lessonTypeId;
     private String lessonTypeName;
+    private String skill;
 
     public LessonDTO() {
     }
 
-    public LessonDTO(Integer id, String title, String image, String content, Date createdDate, Date updatedDate, Integer categoryId, String categoryName, Integer lessonTypeId, String lessonTypeName) {
+    public LessonDTO(Integer id, String title, String image, String content, Date createdDate, Date updatedDate, Integer categoryId, String categoryName, Integer lessonTypeId, String lessonTypeName, String skill) {
         this.id = id;
         this.title = title;
         this.image = image;
@@ -36,7 +37,9 @@ public class LessonDTO {
         this.categoryName = categoryName;
         this.lessonTypeId = lessonTypeId;
         this.lessonTypeName = lessonTypeName;
+        this.skill = skill;
     }
+    
    
     /**
      * @return the id
@@ -176,6 +179,20 @@ public class LessonDTO {
      */
     public void setLessonTypeName(String lessonTypeName) {
         this.lessonTypeName = lessonTypeName;
+    }
+
+    /**
+     * @return the skill
+     */
+    public String getSkill() {
+        return skill;
+    }
+
+    /**
+     * @param skill the skill to set
+     */
+    public void setSkill(String skill) {
+        this.skill = skill;
     }
     
 }

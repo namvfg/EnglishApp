@@ -55,12 +55,10 @@ public class Answer implements Serializable {
     @Column(name = "is_correct")
     private boolean isCorrect;
     @Basic(optional = false)
-    @NotNull
     @Column(name = "created_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdDate;
     @Basic(optional = false)
-    @NotNull
     @Column(name = "updated_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedDate;

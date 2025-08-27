@@ -21,4 +21,6 @@ public interface CategoryService {
     boolean addOrUpdateCategory(Category c);
 
     Category getCategoryById(int id);
+    
+    boolean deleteCategoryById(int id);
 }

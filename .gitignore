@@ -23,3 +23,51 @@
 hs_err_pid*
 replay_pid*
 /AppV1/target/
+
+# dependencies
+/node_modules
+
+# build output
+/build
+
+# local env files
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# misc
+.DS_Store
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# editor directories and files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# OS generated
+Thumbs.db
+ehthumbs.db
+
+# testing
+/coverage
+
+# optional: if using parcel or vite
+/dist
+
+# Optional: if using eslint cache
+.eslintcache
+
+# Optional: if using storybook
+out/
+.storybook-out/
+
+# Optional: Mac system file
+*.DS_Store
+

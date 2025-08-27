@@ -70,15 +70,11 @@ public class Exercise implements Serializable {
     @Column(name = "updated_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedDate;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "exerciseId")
-    private Set<UserWritingAnswer> userWritingAnswerSet;
     @JoinColumn(name = "section_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Section sectionId;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "exerciseId")
     private Set<Answer> answerSet;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "exerciseId")
-    private Set<UserSpeakingAnswer> userSpeakingAnswerSet;
 
     public Exercise() {
     }
@@ -135,15 +131,6 @@ public class Exercise implements Serializable {
         this.updatedDate = updatedDate;
     }
 
-    @XmlTransient
-    public Set<UserWritingAnswer> getUserWritingAnswerSet() {
-        return userWritingAnswerSet;
-    }
-
-    public void setUserWritingAnswerSet(Set<UserWritingAnswer> userWritingAnswerSet) {
-        this.userWritingAnswerSet = userWritingAnswerSet;
-    }
-
     public Section getSectionId() {
         return sectionId;
     }
@@ -159,15 +146,6 @@ public class Exercise implements Serializable {
 
     public void setAnswerSet(Set<Answer> answerSet) {
         this.answerSet = answerSet;
-    }
-
-    @XmlTransient
-    public Set<UserSpeakingAnswer> getUserSpeakingAnswerSet() {
-        return userSpeakingAnswerSet;
-    }
-
-    public void setUserSpeakingAnswerSet(Set<UserSpeakingAnswer> userSpeakingAnswerSet) {
-        this.userSpeakingAnswerSet = userSpeakingAnswerSet;
     }
 
     @Override

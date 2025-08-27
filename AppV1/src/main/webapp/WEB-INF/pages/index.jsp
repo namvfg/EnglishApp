@@ -55,8 +55,12 @@
                     <td>${c.createdDate}</td>
                     <td>${c.updatedDate}</td>
                     <td>
-                        <a href="<c:url value="/categories/${c.id}"/>" class="btn btn-success mb-1">Update</a>
-                        <button class="btn btn-danger mb-1">Delete</button>
+                        <a href="<c:url value='/categories/${c.id}' />" class="btn btn-success mb-1">Update</a>
+                        <a href="<c:url value='/categories/${c.id}/delete' />" 
+                           class="btn btn-danger mb-1"
+                           onclick="return confirm('Bạn có chắc chắn muốn xóa category này không?');">
+                            Delete
+                        </a>
                     </td>
                 </tr>
             </c:forEach>

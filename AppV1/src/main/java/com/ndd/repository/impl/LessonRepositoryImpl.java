@@ -5,7 +5,6 @@
 package com.ndd.repository.impl;
 
 import com.ndd.enums.Skill;
-import com.ndd.pojo.Category;
 import com.ndd.pojo.Lesson;
 import com.ndd.repository.LessonRepository;
 import java.util.ArrayList;
@@ -157,5 +156,17 @@ public class LessonRepositoryImpl implements LessonRepository {
     public Lesson getLessonById(Integer id) {
         Session session = this.factory.getObject().getCurrentSession();
         return session.get(Lesson.class, id);
+    }
+
+    @Override
+    public boolean deleteLessonById(Integer id) {
+        Session session = this.factory.getObject().getCurrentSession();
+        Lesson lesson = session.get(Lesson.class, id);
+
+        if (lesson != null) {
+            session.delete(lesson);
+            return true;
+        }
+        return false;
     }
 }

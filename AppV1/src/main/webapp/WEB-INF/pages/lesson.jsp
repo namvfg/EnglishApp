@@ -85,7 +85,7 @@
     </form:form>
 </div>
 <c:choose>
-    <c:when test="${lesson.id != null}">
+    <c:when test="${lesson.id != null && lesson.lessonTypeId.skill != 'writing'&& lesson.lessonTypeId.skill != 'speaking'}">
         <div class="row mt-3 mb-3">
             <!-- add -->
             <div class="col-4">
@@ -111,12 +111,19 @@
                          data-id="${section.id}"
                          data-section-type-id="${section.sectionTypeId.id}"
                          data-lessonType="${section.sectionTypeId.name}"                                    
-                         data-content="${section.content}">
+                         data-content="">
 
                         <div class="card-body">
                             <div class="d-flex flex-column justify-content-between">
                                 <h6 class="mb-1">${section.sectionTypeId.name}</h6>
-                                <p>${section.content}</p>
+                                <c:choose>
+                                    <c:when test="${fn:contains(section.content, '<img')}">
+                                        <p><em>Image</em></p>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <p>${fn:substring(section.content, 0, 100)}...</p>
+                                    </c:otherwise>
+                                </c:choose>
                             </div>
                         </div>
                         <a class="btn btn-info" href="<c:url value="/categories/${category.id}/lessons/${lesson.id}/sections/${section.id}" />">Chi tiết</a>
@@ -125,8 +132,8 @@
             </c:forEach>
         </div>
 
-        <div class="modal fade" id="sectionModal" tabindex="-1" data-bs-focus="false">
-            <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div style="overflow-y: auto;" style="overflow-y: auto" class="modal fade" id="sectionModal" tabindex="-1" data-bs-focus="false">
+            <div class="modal-dialog modal-lg modal-dialog-scrollable" >
                 <div class="modal-content">
                     <form id="sectionForm" ><!-- gui trong lesson.js -->
                         <div class="modal-header">
@@ -134,7 +141,7 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
                         </div>
 
-                        <div class="modal-body">
+                        <div class="modal-body" style="overflow-y: auto">
                             <!-- Hidden phục vụ create/update -->
                             <input type="hidden" name="lessonId" id="lessonId" value="${lesson.id}"/>
                             <input type="hidden" name="id" id="secId"/>
@@ -152,7 +159,7 @@
                             <div>
                                 <div id="contentWrap">
                                     <label class="form-label">Nội dung</label>
-                                    <textarea class="form-control" rows="6" name="content" id="secContent"></textarea>
+                                    <textarea class="form-control h-70" rows="6" name="content" id="secContent"></textarea>
                                 </div>
                             </div>
 
