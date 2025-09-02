@@ -45,6 +45,8 @@ yarn-error.log*
 *.njsproj
 *.sln
 
+AppV1/src/main/resources/configs.properties
+
 # OS generated
 Thumbs.db
 ehthumbs.db
