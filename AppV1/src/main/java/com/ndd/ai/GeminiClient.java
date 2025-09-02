@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Base64;
+import java.util.List;
 import okhttp3.HttpUrl;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -39,6 +40,90 @@ public class GeminiClient {
 
     public GeminiClient(String apiKey) {
         this.apiKey = apiKey;
+    }
+
+    public String evaluateSpeakingTranscript(String title, List<String> questions, String transcript) throws IOException {
+        String prompt = "You are an IELTS Speaking examiner.\n"
+                + "\n"
+                + "Please evaluate the following speaking transcript using IELTS Speaking band descriptors, and provide scores for the following criteria:\n"
+                + "- Pronunciation\n"
+                + "- Fluency\n"
+                + "- Coherence\n"
+                + "- Lexical Resource\n"
+                + "- Grammatical Range and Accuracy\n"
+                + "- Overall Band Score\n"
+                + "\n"
+                + "Return a valid JSON object with the following fields:\n"
+                + "- transcript\n"
+                + "- pronunciation_score\n"
+                + "- fluency_score\n"
+                + "- coherence_score\n"
+                + "- lexical_resource_score\n"
+                + "- grammar_score\n"
+                + "- overall_score\n"
+                + "- feedback\n"
+                + "\n"
+                + "All band scores should be float numbers from 0.0 to 9.0.\n"
+                + "\n"
+                + "The 'transcript' field should contain the original input transcript.\n"
+                + "\n"
+                + "The 'feedback' field must be a single string (not an object), clearly structured with headings (e.g., \"Pronunciation\", \"Lexical Resource\", etc.) and written in Vietnamese. "
+                + "Example vocabulary suggestions or headings should remain in English.\n"
+                + "\n"
+                + "Do NOT include markdown, backticks, or code formatting.";
+
+        // Chuẩn bị đề bài dưới dạng string
+        StringBuilder questionPrompt = new StringBuilder();
+        questionPrompt.append("Prompt Title: ").append(title).append("\nQuestions:\n");
+        for (int i = 0; i < questions.size(); i++) {
+            questionPrompt.append((i + 1)).append(". ").append(questions.get(i)).append("\n");
+        }
+
+        // JSON structure for Gemini
+        ObjectNode root = mapper.createObjectNode();
+        ArrayNode contents = mapper.createArrayNode();
+        root.set("contents", contents);
+
+        // Turn 1: Prompt
+        ArrayNode parts1 = arr(obj("text", prompt));
+        ObjectNode turn1 = mapper.createObjectNode();
+        turn1.put("role", "user");
+        turn1.set("parts", parts1);
+        contents.add(turn1);
+
+        // Turn 2: Prompt + Questions
+        ArrayNode parts2 = arr(obj("text", questionPrompt.toString()));
+        ObjectNode turn2 = mapper.createObjectNode();
+        turn2.put("role", "user");
+        turn2.set("parts", parts2);
+        contents.add(turn2);
+
+        // Turn 3: Transcript
+        ArrayNode parts3 = arr(obj("text", "Transcript:\n" + transcript));
+        ObjectNode turn3 = mapper.createObjectNode();
+        turn3.put("role", "user");
+        turn3.set("parts", parts3);
+        contents.add(turn3);
+
+        // Gửi request
+        HttpUrl url = HttpUrl.parse(GEMINI_URL).newBuilder()
+                .addQueryParameter("key", apiKey)
+                .build();
+
+        Request request = new Request.Builder()
+                .url(url)
+                .post(RequestBody.create(
+                        mapper.writeValueAsString(root),
+                        MediaType.parse("application/json")))
+                .build();
+
+        try (Response response = httpClient.newCall(request).execute()) {
+            if (!response.isSuccessful()) {
+                String err = response.body() != null ? response.body().string() : "null";
+                throw new IOException("Gemini API error: " + response.code() + " - " + err);
+            }
+            return response.body().string();
+        }
     }
 
     public String evaluateTask1Essay(String essayContent, String imageUrl) throws IOException {

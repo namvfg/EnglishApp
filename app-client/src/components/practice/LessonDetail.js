@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Container, Row, Col, Card } from "react-bootstrap";
+import { useEffect, useState, useRef } from "react";
+import { Container, Card } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import MySpinner from "../../layout/MySpinner";
 import WritingEditor from "./WritingEditor";
@@ -11,6 +11,30 @@ const LessonDetail = () => {
     const { lessonId } = useParams();
     const [lesson, setLesson] = useState(null);
     const [loading, setLoading] = useState(true);
+
+    const leftPaneRef = useRef();
+
+    // 🧠 Reset layout khi responsive thay đổi
+    useEffect(() => {
+        const handleResponsiveChange = () => {
+            const isMobile = window.innerWidth <= 768;
+            const leftPane = leftPaneRef.current;
+            if (!leftPane) return;
+
+            if (isMobile) {
+                leftPane.style.width = "100%";
+                leftPane.style.height = "200px";
+            } else {
+                leftPane.style.height = "100%";
+                leftPane.style.width = "50%";
+            }
+        };
+
+        handleResponsiveChange(); // chạy lần đầu
+        window.addEventListener("resize", handleResponsiveChange);
+
+        return () => window.removeEventListener("resize", handleResponsiveChange);
+    }, []);
 
     useEffect(() => {
         const fetchLesson = async () => {
@@ -27,23 +51,6 @@ const LessonDetail = () => {
         fetchLesson();
     }, [lessonId]);
 
-    useEffect(() => {
-        if (!lesson) return;
-
-        const imgs = document.querySelectorAll(".lesson-content img");
-        imgs.forEach(img => {
-            img.removeAttribute("width");
-            img.removeAttribute("height");
-            img.removeAttribute("style");
-
-            // Thêm lại style như mong muốn
-            img.style.maxWidth = "100%";
-            img.style.height = "auto";
-            img.style.display = "block";
-            img.style.margin = "0 auto";
-        });
-    }, [lesson]);
-
     if (loading) return <MySpinner />;
     if (!lesson) return <p className="text-center">Bài học không tồn tại.</p>;
 
@@ -51,7 +58,7 @@ const LessonDetail = () => {
         const type = lesson.skill.toLowerCase();
         switch (type) {
             case "writing":
-                return <WritingEditor lessonId={lesson.id} lessonContent={lesson.content} lessonType={ lesson.lessonTypeName } />;
+                return <WritingEditor lessonId={lesson.id} lessonContent={lesson.content} lessonType={lesson.lessonTypeName} />;
             case "speaking":
                 return <SpeakingTask lessonId={lesson.id} lessonType={lesson.lessonTypeName} />;
             case "reading":
@@ -64,8 +71,8 @@ const LessonDetail = () => {
 
     return (
         <Container className="my-4">
-            <Row>
-                <Col md={6}>
+            <div className="split-layout">
+                <div className="left-pane" ref={leftPaneRef}>
                     <Card className="mb-4 shadow">
                         <Card.Img variant="top" src={lesson.image} alt={lesson.title} style={{ maxWidth: "200px", objectFit: "cover", margin: "10px" }} />
                         <Card.Body>
@@ -73,9 +80,12 @@ const LessonDetail = () => {
                             <div className="card-text lesson-content" dangerouslySetInnerHTML={{ __html: lesson.content }} />
                         </Card.Body>
                     </Card>
-                </Col>
-                <Col md={6}>{renderExerciseComponent()}</Col>
-            </Row>
+                </div>
+
+                <div className="right-pane">
+                    {renderExerciseComponent()}
+                </div>
+            </div>
         </Container>
     );
 };

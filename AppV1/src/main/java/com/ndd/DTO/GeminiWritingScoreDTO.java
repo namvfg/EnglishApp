@@ -1,22 +1,34 @@
 package com.ndd.DTO;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-
 /**
  *
  * @author Admin
  */
 public class GeminiWritingScoreDTO {
+
     private String content;
     private String feedback;
-    private float task_score;
-    private float coherence_score;
-    private float lexical_score;
-    private float grammar_score;
-    private float overall_score;
+    
+    @JsonProperty("task_score")
+    private float taskScore;
+
+    @JsonProperty("coherence_score")
+    private float coherenceScore;
+
+    @JsonProperty("lexical_score")
+    private float lexicalScore;
+
+    @JsonProperty("grammar_score")
+    private float grammarScore;
+
+    @JsonProperty("overall_score")
+    private float overallScore;
 
     public GeminiWritingScoreDTO() {
     }
@@ -24,15 +36,13 @@ public class GeminiWritingScoreDTO {
     public GeminiWritingScoreDTO(String content, String feedback, float task_score, float coherence_score, float lexical_score, float grammar_score, float overall_score) {
         this.content = content;
         this.feedback = feedback;
-        this.task_score = task_score;
-        this.coherence_score = coherence_score;
-        this.lexical_score = lexical_score;
-        this.grammar_score = grammar_score;
-        this.overall_score = overall_score;
+        this.taskScore = task_score;
+        this.coherenceScore = coherence_score;
+        this.lexicalScore = lexical_score;
+        this.grammarScore = grammar_score;
+        this.overallScore = overall_score;
     }
 
-    
-    
     /**
      * @return the content
      */
@@ -62,74 +72,73 @@ public class GeminiWritingScoreDTO {
     }
 
     /**
-     * @return the task_score
+     * @return the taskScore
      */
-    public float getTask_score() {
-        return task_score;
+    public float getTaskScore() {
+        return taskScore;
     }
 
     /**
-     * @param task_score the task_score to set
+     * @param taskScore the taskScore to set
      */
-    public void setTask_score(float task_score) {
-        this.task_score = task_score;
+    public void setTaskScore(float taskScore) {
+        this.taskScore = taskScore;
     }
 
     /**
-     * @return the coherence_score
+     * @return the coherenceScore
      */
-    public float getCoherence_score() {
-        return coherence_score;
+    public float getCoherenceScore() {
+        return coherenceScore;
     }
 
     /**
-     * @param coherence_score the coherence_score to set
+     * @param coherenceScore the coherenceScore to set
      */
-    public void setCoherence_score(float coherence_score) {
-        this.coherence_score = coherence_score;
+    public void setCoherenceScore(float coherenceScore) {
+        this.coherenceScore = coherenceScore;
     }
 
     /**
-     * @return the lexical_score
+     * @return the lexicalScore
      */
-    public float getLexical_score() {
-        return lexical_score;
+    public float getLexicalScore() {
+        return lexicalScore;
     }
 
     /**
-     * @param lexical_score the lexical_score to set
+     * @param lexicalScore the lexicalScore to set
      */
-    public void setLexical_score(float lexical_score) {
-        this.lexical_score = lexical_score;
+    public void setLexicalScore(float lexicalScore) {
+        this.lexicalScore = lexicalScore;
     }
 
     /**
-     * @return the grammar_score
+     * @return the grammarScore
      */
-    public float getGrammar_score() {
-        return grammar_score;
+    public float getGrammarScore() {
+        return grammarScore;
     }
 
     /**
-     * @param grammar_score the grammar_score to set
+     * @param grammarScore the grammarScore to set
      */
-    public void setGrammar_score(float grammar_score) {
-        this.grammar_score = grammar_score;
+    public void setGrammarScore(float grammarScore) {
+        this.grammarScore = grammarScore;
     }
 
     /**
-     * @return the overall_score
+     * @return the overallScore
      */
-    public float getOverall_score() {
-        return overall_score;
+    public float getOverallScore() {
+        return overallScore;
     }
 
     /**
-     * @param overall_score the overall_score to set
+     * @param overallScore the overallScore to set
      */
-    public void setOverall_score(float overall_score) {
-        this.overall_score = overall_score;
+    public void setOverallScore(float overallScore) {
+        this.overallScore = overallScore;
     }
-    
-    
+
 }

@@ -62,4 +62,5 @@ public class R2Config {
     public String r2BucketName() {
         return bucketName;
     }
+   
 }

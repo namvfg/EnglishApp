@@ -148,6 +148,7 @@ public class LessonController {
             redirectAttributes.addFlashAttribute("toastType", "success");
             redirectAttributes.addFlashAttribute("toastMessage", "Thêm lesson thành công");
         }
+        redirectAttributes.addAttribute("category", category);
         return "redirect:/categories/" + cateId;
     }
 

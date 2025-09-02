@@ -6,6 +6,7 @@ package com.ndd.configs;
 
 import com.ndd.formatters.CategoryFormatter;
 import com.ndd.formatters.CategoryTypeFormatter;
+import com.ndd.formatters.LessonFormatter;
 import com.ndd.formatters.LessonTypeFormatter;
 import com.ndd.formatters.SectionTypeFormatter;
 import java.text.SimpleDateFormat;
@@ -52,6 +53,7 @@ public class WebAppContextConfig implements WebMvcConfigurer {
         registry.addFormatter(new LessonTypeFormatter());
         registry.addFormatter(new CategoryFormatter());
         registry.addFormatter(new SectionTypeFormatter());
+        registry.addFormatter(new LessonFormatter());
     }
 
     @Bean

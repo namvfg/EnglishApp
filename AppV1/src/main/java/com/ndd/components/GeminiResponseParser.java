@@ -6,6 +6,7 @@ package com.ndd.components;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ndd.DTO.GeminiSpeakingScoreDTO;
 import com.ndd.DTO.GeminiWritingScoreDTO;
 import java.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,15 +18,15 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class GeminiResponseParser {
-    
+
     @Autowired
     private ObjectMapper mapper;
 
-    public GeminiWritingScoreDTO parse(String geminiRawText) throws IOException {
+    public String parseGeminiJsonToString(String geminiRawText) throws IOException {
         JsonNode root = mapper.readTree(geminiRawText);
         JsonNode textNode = root.path("candidates").get(0)
-                                 .path("content").path("parts").get(0)
-                                 .path("text");
+                .path("content").path("parts").get(0)
+                .path("text");
 
         String text = textNode.asText().trim();
 
@@ -36,7 +37,16 @@ public class GeminiResponseParser {
         if (text.endsWith("```")) {
             text = text.replaceFirst("\\s*```$", "");
         }
+        return text;
+    }
 
+    public GeminiWritingScoreDTO parseWriting(String geminiRawText) throws IOException {
+        String text = parseGeminiJsonToString(geminiRawText);
         return mapper.readValue(text, GeminiWritingScoreDTO.class);
+    }
+
+    public GeminiSpeakingScoreDTO parseSpeaking(String geminiRawText) throws IOException {
+        String text = parseGeminiJsonToString(geminiRawText);
+        return mapper.readValue(text, GeminiSpeakingScoreDTO.class);
     }
 }

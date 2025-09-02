@@ -1,26 +1,26 @@
+// SpeakingTask.js
 import React, { useEffect, useRef, useState } from "react";
 import { Alert, Button, Container, Form } from "react-bootstrap";
 import Apis, { endpoints } from "../../configs/Apis";
 import useTextToSpeech from "../../hooks/useTextToSpeech";
-
-const Countdown = ({ seconds, onFinish }) => {
-    const [timeLeft, setTimeLeft] = useState(seconds);
-
-    useEffect(() => {
-        if (timeLeft <= 0) {
-            onFinish();
-            return;
-        }
-        const interval = setInterval(() => setTimeLeft(t => t - 1), 1000);
-        return () => clearInterval(interval);
-    }, [timeLeft, onFinish]);
-
-    return <Alert variant="secondary"> Chuẩn bị: {timeLeft} giây</Alert>;
-};
+import Countdown from "../../layout/CountDown";
 
 const SpeakingTask = ({ lessonId, lessonType }) => {
+    const [loading, setLoading] = useState(false);
+
     const [introduction, setIntroduction] = useState("");
     const [questions, setQuestions] = useState([]);
+
+    const [step, setStep] = useState("intro");
+    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+    const [recording, setRecording] = useState(false);
+    const [audioUrl, setAudioUrl] = useState(null);
+    const [submitStatus, setSubmitStatus] = useState(null);
+    const [audioBlob, setAudioBlob] = useState(null);
+
+    const { voices, selectedVoiceIndex, setSelectedVoiceIndex, speak } = useTextToSpeech();
+    const mediaRecorderRef = useRef(null);
+    const audioChunks = useRef([]);
 
     useEffect(() => {
         const loadSpeakingLesson = async () => {
@@ -32,18 +32,8 @@ const SpeakingTask = ({ lessonId, lessonType }) => {
                 console.error(err);
             }
         };
-
         loadSpeakingLesson();
     }, [lessonId]);
-
-    const [step, setStep] = useState("intro"); // intro, ready, asking, cuecard, speaking-part2, finished
-    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-    const [recording, setRecording] = useState(false);
-    const [audioUrl, setAudioUrl] = useState(null);
-
-    const { voices, selectedVoiceIndex, setSelectedVoiceIndex, speak } = useTextToSpeech();
-    const mediaRecorderRef = useRef(null);
-    const audioChunks = useRef([]);
 
     useEffect(() => {
         if (voices.length > 0 && step === "intro") {
@@ -54,7 +44,6 @@ const SpeakingTask = ({ lessonId, lessonType }) => {
                 const utterance = new SpeechSynthesisUtterance(introduction);
                 utterance.voice = selectedVoice;
                 utterance.onend = () => setStep("ready");
-
                 window.speechSynthesis.speak(utterance);
             }, 1000);
 
@@ -63,44 +52,51 @@ const SpeakingTask = ({ lessonId, lessonType }) => {
     }, [voices, selectedVoiceIndex, introduction, step]);
 
     const startRecording = async () => {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        mediaRecorderRef.current = new MediaRecorder(stream);
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            const options = MediaRecorder.isTypeSupported("audio/wav")
+                ? { mimeType: "audio/wav" }
+                : {};
 
-        mediaRecorderRef.current.ondataavailable = (event) => {
-            if (event.data.size > 0) {
-                audioChunks.current.push(event.data);
-            }
-        };
+            mediaRecorderRef.current = new MediaRecorder(stream, options);
 
-        mediaRecorderRef.current.onstop = () => {
-            const blob = new Blob(audioChunks.current, { type: "audio/wav" });
-            setAudioUrl(URL.createObjectURL(blob));
+            mediaRecorderRef.current.ondataavailable = (e) => {
+                if (e.data.size > 0) audioChunks.current.push(e.data);
+            };
+
+            mediaRecorderRef.current.onstop = () => {
+                const blob = new Blob(audioChunks.current, { type: "audio/wav" });
+                setAudioUrl(URL.createObjectURL(blob));
+                setAudioBlob(blob);
+                audioChunks.current = [];
+            };
+
             audioChunks.current = [];
-        };
-
-        mediaRecorderRef.current.start();
-        setRecording(true);
+            mediaRecorderRef.current.start();
+            setRecording(true);
+        } catch (err) {
+            console.error("Error accessing mic:", err);
+        }
     };
 
     const pauseRecording = () => {
-        if (mediaRecorderRef.current && mediaRecorderRef.current.state === "recording") {
-            mediaRecorderRef.current.pause();
-        }
+        if (mediaRecorderRef.current?.state === "recording") mediaRecorderRef.current.pause();
     };
 
     const resumeRecording = () => {
-        if (mediaRecorderRef.current && mediaRecorderRef.current.state === "paused") {
-            mediaRecorderRef.current.resume();
-        }
-    }
+        if (mediaRecorderRef.current?.state === "paused") mediaRecorderRef.current.resume();
+    };
 
     const stopRecording = () => {
-        if (!mediaRecorderRef.current) return;
-        mediaRecorderRef.current.stop();
-        setRecording(false);
+        if (mediaRecorderRef.current) {
+            mediaRecorderRef.current.stop();
+            setRecording(false);
+        }
     };
 
     const startSpeakingTest = () => {
+        window.speechSynthesis.cancel(); // ❗ Hủy mọi utterance cũ trước khi đọc
+
         if (lessonType === "Speaking Part 1" || lessonType === "Speaking Part 3") {
             if (questions.length === 0) return;
             const firstQuestion = questions[0];
@@ -122,10 +118,41 @@ const SpeakingTask = ({ lessonId, lessonType }) => {
             stopRecording();
             return;
         }
-        const nextQuestion = questions[nextIndex];
         setCurrentQuestionIndex(nextIndex);
-        speak(nextQuestion, () => resumeRecording());
+        speak(questions[nextIndex], () => resumeRecording());
     };
+
+    const handleSubmit = async () => {
+        try {
+            setLoading(true);
+            setSubmitStatus(null);
+            if (!audioBlob) {
+                setSubmitStatus({ type: "danger", message: "Không có dữ liệu ghi âm để gửi." });
+                return;
+            }
+
+            const file = new File([audioBlob], "speaking.wav", { type: "audio/wav" });
+
+            const formData = new FormData();
+            formData.append("userId", localStorage.getItem("userId"));
+            formData.append("lessonId", lessonId);
+            formData.append("audio", file);
+
+            const res = await Apis.post(endpoints["speaking-evaluate"], formData, {
+                headers: { "Content-Type": "multipart/form-data" }
+            });
+
+            setSubmitStatus({ type: "success", message: "Gửi file và chấm điểm thành công." });
+            console.log("Kết quả:", res.data);
+        } catch (err) {
+            console.error(err);
+            setSubmitStatus({ type: "danger", message: "Lỗi khi gửi file hoặc chấm điểm." });
+        }
+        finally {
+            setLoading(false);
+        }
+    };
+
 
     return (
         <Container className="mt-4">
@@ -136,8 +163,7 @@ const SpeakingTask = ({ lessonId, lessonType }) => {
                 <Form.Select
                     value={selectedVoiceIndex}
                     onChange={(e) => {
-                        const index = parseInt(e.target.value);
-                        setSelectedVoiceIndex(index);
+                        setSelectedVoiceIndex(parseInt(e.target.value));
                         setStep("intro");
                     }}>
                     {voices.map((v, i) => (
@@ -184,11 +210,23 @@ const SpeakingTask = ({ lessonId, lessonType }) => {
 
             {step === "finished" && (
                 <div className="mt-3">
-                    <p><strong>✅ Đã hoàn tất phần nói</strong></p>
+                    <p><strong>Đã hoàn tất phần nói</strong></p>
                     {audioUrl && <audio controls src={audioUrl}></audio>}
+
+                    <Button className="mt-2" onClick={handleSubmit} disabled={loading}>
+                        {loading ? (
+                            <>
+                                <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                Đang gửi và chấm điểm...
+                            </>
+                        ) : "Gửi và chấm điểm"} 
+                    </Button>
+
+                    {submitStatus && <Alert className="mt-3" variant={submitStatus.type}>{submitStatus.message}</Alert>}
                 </div>
             )}
         </Container>
     );
 };
+
 export default SpeakingTask;

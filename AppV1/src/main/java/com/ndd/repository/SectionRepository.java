@@ -17,4 +17,6 @@ public interface SectionRepository {
     boolean addOrUpdateSection(Section l);
     
     Section getSectionById(int id);
+    
+    boolean deleteSectionById(int id);
 }

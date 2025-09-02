@@ -39,12 +39,6 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "LessonType.findBySkill", query = "SELECT l FROM LessonType l WHERE l.skill = :skill")})
 public class LessonType implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "id")
-    private Integer id;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 100)
@@ -55,6 +49,13 @@ public class LessonType implements Serializable {
     @Column(name = "skill")
     @Enumerated(EnumType.STRING)
     private Skill skill;
+
+    private static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "id")
+    private Integer id;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "lessonTypeId")
     private Set<Lesson> lessonSet;
 
@@ -79,21 +80,6 @@ public class LessonType implements Serializable {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Skill getSkill() {
-        return skill;
-    }
-
-    public void setSkill(Skill skill) {
-        this.skill = skill;
-    }
 
     @XmlTransient
     public Set<Lesson> getLessonSet() {
@@ -127,6 +113,22 @@ public class LessonType implements Serializable {
     @Override
     public String toString() {
         return "com.ndd.pojo.LessonType[ id=" + id + " ]";
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Skill getSkill() {
+        return skill;
+    }
+
+    public void setSkill(Skill skill) {
+        this.skill = skill;
     }
     
 }

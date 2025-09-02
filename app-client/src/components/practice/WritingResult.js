@@ -11,7 +11,7 @@ function WritingResult() {
         const loadResult = async () => {
             try {
                 const res = await Apis.get(endpoints["writing-result"](id));
-                setResult(res.data);
+                setResult(res.data.score);
             } catch (err) {
                 console.error(err);
                 setError("Không thể tải kết quả. Hãy thử lại sau.");

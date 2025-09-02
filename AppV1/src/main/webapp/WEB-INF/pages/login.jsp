@@ -9,21 +9,37 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 
-<c:url value="/login" var="action" />
-<form method="post" action="${action}">
-    <div class="form-floating mb-3 mt-3">
-        <input type="text" class="form-control" id="email" placeholder="Enter email" name="email">
-        <label for="email">Email</label>
-    </div>
 
-    <div class="form-floating mt-3 mb-3">
-        <input type="password" class="form-control" id="pwd" placeholder="Enter password" name="password">
-        <label for="pwd">Password</label>
+
+<div class="container d-flex justify-content-center align-items-center min-vh-100">
+    <div class="card shadow w-100" style="max-width: 400px;">
+        <div class="card-body">
+            <h3 class="card-title text-center mb-4">Đăng Nhập</h3>
+
+            <c:url value="/login" var="action" />
+            <form method="post" action="${action}">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="email" name="email" placeholder="Email" required>
+                    <label for="email">Email</label>
+                </div>
+
+                <div class="form-floating mb-4">
+                    <input type="password" class="form-control" id="pwd" name="password" placeholder="Mật khẩu" required>
+                    <label for="pwd">Mật khẩu</label>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">Đăng nhập</button>
+            </form>
+
+            <c:if test="${param.error != null}">
+                <div class="alert alert-danger mt-4 text-center" role="alert">
+                    Tên đăng nhập hoặc mật khẩu không đúng!
+                </div>
+            </c:if>
+        </div>
     </div>
-    
-    <div class="form-floating mt-3 mb-3">
-        <input type="submit" value="Login" class="btn btn-info" />
-    </div>
-    
-</form>
+</div>
+
+<!-- Bootstrap Bundle JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 

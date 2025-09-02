@@ -27,7 +27,9 @@ public class DispatcherServletInit extends AbstractAnnotationConfigDispatcherSer
             MailConfig.class,
             CloudinaryConfig.class,
             GeminiConfig.class,
-            HttpConfig.class
+            HttpConfig.class,
+            AzureSpeechConfig.class,
+            OpenAIConfig.class
         };
     }
 

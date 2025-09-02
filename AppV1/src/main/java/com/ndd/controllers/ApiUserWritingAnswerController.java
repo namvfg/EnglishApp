@@ -49,10 +49,10 @@ public class ApiUserWritingAnswerController {
     ) {
         try {
             // 1. Gọi Gemini chấm điểm
-            String json = geminiService.evaluate(lessonType, prompt, essay);
+            String json = geminiService.evaluateWriting(lessonType, prompt, essay);
             System.out.println("Raw response from Gemini:\n" + json); //  Dòng này
             // 2. Parse JSON thành DTO
-            GeminiWritingScoreDTO dto = geminiService.parseGeminiResponse(json);
+            GeminiWritingScoreDTO dto = geminiService.parseGeminiWritingResponse(json);
 
             // 3. Lưu vào DB
             UserWritingAnswer answer = new UserWritingAnswer();
@@ -60,11 +60,11 @@ public class ApiUserWritingAnswerController {
             answer.setLessonId(lessonService.getLessonById(lessonId));
             answer.setContent(dto.getContent());
             answer.setFeedback(dto.getFeedback());
-            answer.setTaskScore(dto.getTask_score());
-            answer.setCoherenceScore(dto.getCoherence_score());
-            answer.setLexicalScore(dto.getLexical_score());
-            answer.setGrammarScore(dto.getGrammar_score());
-            answer.setOverallScore(dto.getOverall_score());
+            answer.setTaskScore(dto.getTaskScore());
+            answer.setCoherenceScore(dto.getCoherenceScore());
+            answer.setLexicalScore(dto.getLexicalScore());
+            answer.setGrammarScore(dto.getGrammarScore());
+            answer.setOverallScore(dto.getOverallScore());
             answer.setCreatedDate(new Date());
             answer.setUpdatedDate(new Date());
 
@@ -96,13 +96,15 @@ public class ApiUserWritingAnswerController {
             GeminiWritingScoreDTO dto = new GeminiWritingScoreDTO();
             dto.setContent(answer.getContent());
             dto.setFeedback(answer.getFeedback());
-            dto.setTask_score(answer.getTaskScore());
-            dto.setCoherence_score(answer.getCoherenceScore());
-            dto.setLexical_score(answer.getLexicalScore());
-            dto.setGrammar_score(answer.getGrammarScore());
-            dto.setOverall_score(answer.getOverallScore());
+            dto.setTaskScore(answer.getTaskScore());
+            dto.setCoherenceScore(answer.getCoherenceScore());
+            dto.setLexicalScore(answer.getLexicalScore());
+            dto.setGrammarScore(answer.getGrammarScore());
+            dto.setOverallScore(answer.getOverallScore());
 
-            return ResponseEntity.ok(dto);
+            return ResponseEntity.ok(Map.of(
+                    "score", dto
+            ));
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "Lỗi khi truy vấn bài viết: " + ex.getMessage()));

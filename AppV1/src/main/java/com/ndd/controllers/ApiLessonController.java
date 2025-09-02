@@ -33,8 +33,6 @@ public class ApiLessonController {
 
     @Autowired
     private LessonService lessonService;
-    @Autowired
-    private SectionService sectionService;
 
     @GetMapping("/lessons")
     public ResponseEntity<List<LessonDTO>> list(@RequestParam Map<String, String> params) {
@@ -61,24 +59,6 @@ public class ApiLessonController {
     public ResponseEntity<Long> countLessons(@RequestParam Map<String, String> params) {
         long count = this.lessonService.countLessons(params);
         return ResponseEntity.ok(count);
-    }
-
-    @GetMapping("/lessons/{lessonId}/sections")
-    public ResponseEntity<List<SectionDTO>> getSectionsByLessonId(@PathVariable int lessonId) {
-        List<Section> sections = sectionService.getSectionsByLessonId(lessonId);
-
-        if (sections.isEmpty()) {
-            return ResponseEntity.noContent().build(); //204 no content      
-        }
-        List<SectionDTO> result = sections.stream()
-                .map(s -> new SectionDTO(
-                s.getId(),
-                s.getSectionTypeId().getId(),
-                s.getSectionTypeId().getName(),
-                s.getLessonId().getId(),
-                s.getContent()))
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(result); // 200 OK + json
     }
 
     @GetMapping("/lessons/{lessonId}")

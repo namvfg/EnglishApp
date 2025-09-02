@@ -37,5 +37,10 @@ public class SectionServiceImpl implements SectionService{
     public Section getSectionById(int id) {
         return this.sectionRepo.getSectionById(id);
     }
+
+    @Override
+    public boolean deleteSectionById(int id) {
+        return this.sectionRepo.deleteSectionById(id);
+    }
     
 }

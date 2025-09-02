@@ -63,4 +63,16 @@ public class SectionRepositoryImpl implements SectionRepository {
         Session session = this.factory.getObject().getCurrentSession();
         return session.get(Section.class, id);
     }
+
+    @Override
+    public boolean deleteSectionById(int id) {
+        Session session = this.factory.getObject().getCurrentSession();
+        Section lesson = session.get(Section.class, id);
+
+        if (lesson != null) {
+            session.delete(lesson);
+            return true;
+        }
+        return false;
+    }
 }

@@ -35,17 +35,18 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "CategoryType.findByName", query = "SELECT c FROM CategoryType c WHERE c.name = :name")})
 public class CategoryType implements Serializable {
 
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 100)
+    @Column(name = "name")
+    private String name;
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 100)
-    @Column(name = "name")
-    private String name;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "categoryTypeId")
     private Set<Category> categorySet;
 
@@ -69,13 +70,6 @@ public class CategoryType implements Serializable {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     @XmlTransient
     public Set<Category> getCategorySet() {
@@ -109,6 +103,14 @@ public class CategoryType implements Serializable {
     @Override
     public String toString() {
         return "com.ndd.pojo.CategoryType[ id=" + id + " ]";
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
     
 }

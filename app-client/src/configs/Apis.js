@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const SERVER_CONTEXT = "/AppV1";
+const SERVER_CONTEXT = "AppV1";
 
 export const endpoints = {
     "category-types": "/category-types",
@@ -15,9 +15,12 @@ export const endpoints = {
     "speaking-lesson-detail": (lessonId) => `/speaking-lessons/${lessonId}`,
     "writing-evaluate": "/writing/evaluate",
     "writing-result": (answerId) => `/writing/${answerId}`,
+    "speaking-evaluate": "/speaking/evaluate",
+    "speaking-result": (answerId) => `/speaking/${answerId}`,
+    "sections": (lessonId) => `/lessons/${lessonId}/sections`,
     // Add other endpoints as needed
 };
 
 export default axios.create({
-    baseURL: `http://localhost:8080${SERVER_CONTEXT}/api`, // Base URL for API requests
+    baseURL: `http://localhost:8080/${SERVER_CONTEXT}/api`, // Base URL for API requests
 });

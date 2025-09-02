@@ -4,13 +4,13 @@
  */
 package com.ndd.service.impl;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ndd.DTO.GeminiSpeakingScoreDTO;
 import com.ndd.DTO.GeminiWritingScoreDTO;
 import com.ndd.ai.GeminiClient;
 import com.ndd.components.GeminiResponseParser;
 import com.ndd.service.GeminiService;
 import java.io.IOException;
+import java.util.List;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -31,25 +31,20 @@ public class GeminiServiceImpl implements GeminiService {
     private GeminiResponseParser geminiResponseParser;
 
     @Override
-    public String evaluate(String lessonTypeName, String promptContentHtml, String essayText) throws Exception {
+    public String evaluateWriting(String lessonTypeName, String promptContentHtml, String essayText) throws Exception {
         Document doc = Jsoup.parse(promptContentHtml);
-
         if ("Writing Task 1".equalsIgnoreCase(lessonTypeName)) {
             // 1. Lấy ảnh từ <img>
             Element img = doc.selectFirst("img");
             if (img == null) {
                 throw new IllegalArgumentException("Đề Task 1 phải có ảnh!");
             }
-
             String imageUrl = img.attr("src");
-
             // 2. Xoá <img> để giữ lại phần đề bài là văn bản
             img.remove();
             String promptText = doc.body().text(); // Hoặc giữ lại HTML nếu muốn giữ định dạng
-
             // 3. Gộp đề bài + bài viết
             String fullEssay = "Prompt:\n" + promptText + "\n\nEssay:\n" + essayText;
-
             // 4. Gửi ảnh + bài viết tới Gemini
             return geminiClient.evaluateTask1Essay(fullEssay, imageUrl);
         } else if ("Writing Task 2".equalsIgnoreCase(lessonTypeName)) {
@@ -62,8 +57,20 @@ public class GeminiServiceImpl implements GeminiService {
     }
 
     @Override
-    public GeminiWritingScoreDTO parseGeminiResponse(String json) throws IOException {
-        return geminiResponseParser.parse(json);
+    public GeminiWritingScoreDTO parseGeminiWritingResponse(String json) throws IOException {
+        return geminiResponseParser.parseWriting(json);
     }
+
+    @Override
+    public String evaluateSpeaking(String title, List<String> questions, String transcript) throws Exception {
+        return geminiClient.evaluateSpeakingTranscript(title, questions, transcript);
+    }
+
+    @Override
+    public GeminiSpeakingScoreDTO parseGeminiSpeakingResponse(String json) throws IOException {
+        return geminiResponseParser.parseSpeaking(json);
+    }
+    
+    
 
 }

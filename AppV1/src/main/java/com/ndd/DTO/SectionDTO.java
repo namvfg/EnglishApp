@@ -4,79 +4,46 @@
  */
 package com.ndd.DTO;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 /**
  *
  * @author Admin
  */
 public class SectionDTO {
-
-    private int id;
-
-    @NotNull
-    private Integer sectionTypeId;
-
-    private String sectionTypeName;
-    
-    private Integer lessonId;
-
-    @NotBlank
+    private Integer id;
     private String content;
+    private String question;
+    private String answer;
+    private String correctAnswer;
+    private String sectionTypeName;
+    private String saveType;
 
     public SectionDTO() {
     }
 
-    public SectionDTO(int id, int sectionTypeId, String sectionTypeName, int lessonId, String content) {
+    public SectionDTO(Integer id, String content, String question, String answer, String correctAnswer, String sectionTypeName, String saveType) {
         this.id = id;
-        this.sectionTypeId = sectionTypeId;
-        this.sectionTypeName = sectionTypeName;
-        this.lessonId = lessonId;
         this.content = content;
+        this.question = question;
+        this.answer = answer;
+        this.correctAnswer = correctAnswer;
+        this.sectionTypeName = sectionTypeName;
+        this.saveType = saveType;
     }
 
-   
+    
     /**
      * @return the id
      */
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
     /**
      * @param id the id to set
      */
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
-    }
-
-    /**
-     * @return the sectionTypeId
-     */
-    public int getSectionTypeId() {
-        return sectionTypeId;
-    }
-
-    /**
-     * @param sectionTypeId the sectionTypeId to set
-     */
-    public void setSectionTypeId(int sectionTypeId) {
-        this.sectionTypeId = sectionTypeId;
-    }
-
-    /**
-     * @return the sectionTypeName
-     */
-    public String getSectionTypeName() {
-        return sectionTypeName;
-    }
-
-    /**
-     * @param sectionTypeName the sectionTypeName to set
-     */
-    public void setSectionTypeName(String sectionTypeName) {
-        this.sectionTypeName = sectionTypeName;
     }
 
     /**
@@ -94,17 +61,72 @@ public class SectionDTO {
     }
 
     /**
-     * @return the lessonId
+     * @return the question
      */
-    public int getLessonId() {
-        return lessonId;
+    public String getQuestion() {
+        return question;
     }
 
     /**
-     * @param lessonId the lessonId to set
+     * @param question the question to set
      */
-    public void setLessonId(int lessonId) {
-        this.lessonId = lessonId;
+    public void setQuestion(String question) {
+        this.question = question;
     }
 
+    /**
+     * @return the answer
+     */
+    public String getAnswer() {
+        return answer;
+    }
+
+    /**
+     * @param answer the answer to set
+     */
+    public void setAnswer(String answer) {
+        this.answer = answer;
+    }
+
+    /**
+     * @return the correctAnswer
+     */
+    public String getCorrectAnswer() {
+        return correctAnswer;
+    }
+
+    /**
+     * @param correctAnswer the correctAnswer to set
+     */
+    public void setCorrectAnswer(String correctAnswer) {
+        this.correctAnswer = correctAnswer;
+    }
+
+    /**
+     * @return the sectionTypeName
+     */
+    public String getSectionTypeName() {
+        return sectionTypeName;
+    }
+
+    /**
+     * @param sectionTypeName the sectionTypeName to set
+     */
+    public void setSectionTypeName(String sectionTypeName) {
+        this.sectionTypeName = sectionTypeName;
+    }
+
+    /**
+     * @return the saveType
+     */
+    public String getSaveType() {
+        return saveType;
+    }
+
+    /**
+     * @param saveType the saveType to set
+     */
+    public void setSaveType(String saveType) {
+        this.saveType = saveType;
+    }
 }

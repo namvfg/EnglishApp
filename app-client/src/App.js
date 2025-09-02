@@ -12,6 +12,7 @@ import LessonList from "./components/practice/LessonList";
 import LessonDetail from "./components/practice/LessonDetail";
 import Profile from "./components/user/Profile";
 import WritingResult from "./components/practice/WritingResult";
+import './App.css';
 
 const App = () => {
 

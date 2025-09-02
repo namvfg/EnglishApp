@@ -17,4 +17,6 @@ public interface SectionService {
     boolean addOrUpdateSection(Section s);
     
     Section getSectionById(int id);
+    
+    boolean deleteSectionById(int id);
 }

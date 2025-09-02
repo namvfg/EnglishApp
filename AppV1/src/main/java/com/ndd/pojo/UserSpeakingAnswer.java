@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.ndd.pojo;
 
 import java.io.Serializable;
@@ -24,63 +20,74 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
-/**
- *
- * @author Admin
- */
 @Entity
 @Table(name = "user_speaking_answer")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "UserSpeakingAnswer.findAll", query = "SELECT u FROM UserSpeakingAnswer u"),
-    @NamedQuery(name = "UserSpeakingAnswer.findById", query = "SELECT u FROM UserSpeakingAnswer u WHERE u.id = :id"),
-    @NamedQuery(name = "UserSpeakingAnswer.findByAudioUrl", query = "SELECT u FROM UserSpeakingAnswer u WHERE u.audioUrl = :audioUrl"),
-    @NamedQuery(name = "UserSpeakingAnswer.findByPronunciationScore", query = "SELECT u FROM UserSpeakingAnswer u WHERE u.pronunciationScore = :pronunciationScore"),
-    @NamedQuery(name = "UserSpeakingAnswer.findByFluencyScore", query = "SELECT u FROM UserSpeakingAnswer u WHERE u.fluencyScore = :fluencyScore"),
-    @NamedQuery(name = "UserSpeakingAnswer.findByCreatedDate", query = "SELECT u FROM UserSpeakingAnswer u WHERE u.createdDate = :createdDate"),
-    @NamedQuery(name = "UserSpeakingAnswer.findByUpdatedDate", query = "SELECT u FROM UserSpeakingAnswer u WHERE u.updatedDate = :updatedDate")})
+    @NamedQuery(name = "UserSpeakingAnswer.findById", query = "SELECT u FROM UserSpeakingAnswer u WHERE u.id = :id")
+})
 public class UserSpeakingAnswer implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
+
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private User userId;
+
+    @JoinColumn(name = "lesson_id", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private Lesson lessonId;
+
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
     @Column(name = "audio_url")
     private String audioUrl;
+
     @Lob
-    @Size(max = 65535)
     @Column(name = "transcript")
     private String transcript;
-    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+
     @Column(name = "pronunciation_score")
     private Float pronunciationScore;
+
     @Column(name = "fluency_score")
     private Float fluencyScore;
+
+    @Column(name = "coherence_score")
+    private Float coherenceScore;
+
+    @Column(name = "lexical_resource_score")
+    private Float lexicalResourceScore;
+
+    @Column(name = "grammar_score")
+    private Float grammarScore;
+    
+    @Column(name = "overall_score")
+    private Float overallScore;
+
     @Lob
-    @Size(max = 65535)
     @Column(name = "feedback")
     private String feedback;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "created_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdDate;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "updated_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedDate;
-    @JoinColumn(name = "lesson_id", referencedColumnName = "id")
-    @ManyToOne(optional = false)
-    private Lesson lessonId;
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    @ManyToOne(optional = false)
-    private User userId;
 
     public UserSpeakingAnswer() {
     }
@@ -89,19 +96,28 @@ public class UserSpeakingAnswer implements Serializable {
         this.id = id;
     }
 
-    public UserSpeakingAnswer(Integer id, String audioUrl, Date createdDate, Date updatedDate) {
-        this.id = id;
-        this.audioUrl = audioUrl;
-        this.createdDate = createdDate;
-        this.updatedDate = updatedDate;
-    }
-
     public Integer getId() {
         return id;
     }
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public User getUserId() {
+        return userId;
+    }
+
+    public void setUserId(User userId) {
+        this.userId = userId;
+    }
+
+    public Lesson getLessonId() {
+        return lessonId;
+    }
+
+    public void setLessonId(Lesson lessonId) {
+        this.lessonId = lessonId;
     }
 
     public String getAudioUrl() {
@@ -136,6 +152,30 @@ public class UserSpeakingAnswer implements Serializable {
         this.fluencyScore = fluencyScore;
     }
 
+    public Float getCoherenceScore() {
+        return coherenceScore;
+    }
+
+    public void setCoherenceScore(Float coherenceScore) {
+        this.coherenceScore = coherenceScore;
+    }
+
+    public Float getLexicalResourceScore() {
+        return lexicalResourceScore;
+    }
+
+    public void setLexicalResourceScore(Float lexicalResourceScore) {
+        this.lexicalResourceScore = lexicalResourceScore;
+    }
+
+    public Float getGrammarScore() {
+        return grammarScore;
+    }
+
+    public void setGrammarScore(Float grammarScore) {
+        this.grammarScore = grammarScore;
+    }
+
     public String getFeedback() {
         return feedback;
     }
@@ -160,22 +200,6 @@ public class UserSpeakingAnswer implements Serializable {
         this.updatedDate = updatedDate;
     }
 
-    public Lesson getLessonId() {
-        return lessonId;
-    }
-
-    public void setLessonId(Lesson lessonId) {
-        this.lessonId = lessonId;
-    }
-
-    public User getUserId() {
-        return userId;
-    }
-
-    public void setUserId(User userId) {
-        this.userId = userId;
-    }
-
     @Override
     public int hashCode() {
         int hash = 0;
@@ -185,20 +209,29 @@ public class UserSpeakingAnswer implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof UserSpeakingAnswer)) {
             return false;
         }
         UserSpeakingAnswer other = (UserSpeakingAnswer) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-            return false;
-        }
-        return true;
+        return (this.id != null || other.id == null) && (this.id == null || this.id.equals(other.id));
     }
 
     @Override
     public String toString() {
         return "com.ndd.pojo.UserSpeakingAnswer[ id=" + id + " ]";
     }
-    
+
+    /**
+     * @return the overallScore
+     */
+    public Float getOverallScore() {
+        return overallScore;
+    }
+
+    /**
+     * @param overallScore the overallScore to set
+     */
+    public void setOverallScore(Float overallScore) {
+        this.overallScore = overallScore;
+    }
 }

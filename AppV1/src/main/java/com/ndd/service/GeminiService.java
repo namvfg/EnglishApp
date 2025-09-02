@@ -4,8 +4,10 @@
  */
 package com.ndd.service;
 
+import com.ndd.DTO.GeminiSpeakingScoreDTO;
 import com.ndd.DTO.GeminiWritingScoreDTO;
 import java.io.IOException;
+import java.util.List;
 
 /**
  *
@@ -13,8 +15,12 @@ import java.io.IOException;
  */
 public interface GeminiService {
 
-    String evaluate(String lessonTypeName, String promptContentHtml, String essayText) throws Exception;
+    String evaluateWriting(String lessonTypeName, String promptContentHtml, String essayText) throws Exception;
 
-    GeminiWritingScoreDTO parseGeminiResponse(String json) throws IOException;
+    GeminiWritingScoreDTO parseGeminiWritingResponse(String json) throws IOException;
+    
+    String evaluateSpeaking(String title, List<String> questions, String transcript) throws Exception;
+    
+    GeminiSpeakingScoreDTO parseGeminiSpeakingResponse(String json) throws IOException;
     
 }
