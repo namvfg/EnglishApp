@@ -3,7 +3,7 @@ import { Form, Button } from "react-bootstrap";
 import Apis, { endpoints } from "../../configs/Apis";
 import { useNavigate } from "react-router-dom";
 
-const WritingEditor = ({ lessonId, lessonContent, lessonType }) => {
+const WritingEditor = ({ lessonId, lessonContent, lessonType, durationRef }) => {
     const [text, setText] = useState("");
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);

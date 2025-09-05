@@ -5,7 +5,7 @@ import Apis, { endpoints } from "../../configs/Apis";
 import useTextToSpeech from "../../hooks/useTextToSpeech";
 import Countdown from "../../layout/CountDown";
 
-const SpeakingTask = ({ lessonId, lessonType }) => {
+const SpeakingTask = ({ lessonId, lessonType, durationRef }) => {
     const [loading, setLoading] = useState(false);
 
     const [introduction, setIntroduction] = useState("");

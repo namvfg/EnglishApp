@@ -18,6 +18,7 @@ export const endpoints = {
     "speaking-evaluate": "/speaking/evaluate",
     "speaking-result": (answerId) => `/speaking/${answerId}`,
     "sections": (lessonId) => `/lessons/${lessonId}/sections`,
+    "practice-evaluate": "/practice/evaluate",
     // Add other endpoints as needed
 };
 

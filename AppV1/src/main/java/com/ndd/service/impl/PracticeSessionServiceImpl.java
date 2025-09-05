@@ -9,6 +9,7 @@ import com.ndd.pojo.UserAnswer;
 import com.ndd.repository.PracticeSessionRepository;
 import com.ndd.service.PracticeSessionService;
 import com.ndd.service.UserAnswerService;
+import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,6 +38,8 @@ public class PracticeSessionServiceImpl implements PracticeSessionService {
             return false;
         }
         for (UserAnswer ua : answers) {
+            ua.setCreatedDate(new Date());
+            ua.setUpdatedDate(new Date());
             ua.setPracticeSessionId(session);
         }
         return this.userAnswerService.addAll(answers);

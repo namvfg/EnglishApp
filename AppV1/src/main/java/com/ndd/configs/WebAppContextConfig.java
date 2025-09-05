@@ -4,12 +4,16 @@
  */
 package com.ndd.configs;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ndd.formatters.CategoryFormatter;
 import com.ndd.formatters.CategoryTypeFormatter;
 import com.ndd.formatters.LessonFormatter;
 import com.ndd.formatters.LessonTypeFormatter;
+import com.ndd.formatters.SectionFormatter;
 import com.ndd.formatters.SectionTypeFormatter;
 import java.text.SimpleDateFormat;
+import java.util.List;
+import java.util.TimeZone;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -17,6 +21,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.format.FormatterRegistry;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.validation.Validator;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
@@ -54,6 +60,7 @@ public class WebAppContextConfig implements WebMvcConfigurer {
         registry.addFormatter(new CategoryFormatter());
         registry.addFormatter(new SectionTypeFormatter());
         registry.addFormatter(new LessonFormatter());
+        registry.addFormatter(new SectionFormatter());
     }
 
     @Bean
@@ -88,16 +95,26 @@ public class WebAppContextConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
     }
 
+    @Override
+    public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
+        for (HttpMessageConverter<?> converter : converters) {
+            if (converter instanceof MappingJackson2HttpMessageConverter) {
+                MappingJackson2HttpMessageConverter jacksonConverter
+                        = (MappingJackson2HttpMessageConverter) converter;
+
+                ObjectMapper objectMapper = jacksonConverter.getObjectMapper();
+                objectMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX"));
+                objectMapper.setTimeZone(TimeZone.getTimeZone("UTC"));
+            }
+        }
+    }
+
     @Bean
     public CommonsMultipartResolver multipartResolver() {
         CommonsMultipartResolver resolver = new CommonsMultipartResolver();
         resolver.setMaxUploadSize(52428800); // 5MB
         return resolver;
     }
-    
-    
-    
-    
 
 //    @Bean
 //    public InternalResourceViewResolver internalResourceViewResolver() {

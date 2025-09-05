@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Button, Container, Form, Nav, Navbar, NavDropdown, } from "react-bootstrap";
 import Apis, { endpoints } from "../configs/Apis";
 import MySpinner from "./MySpinner";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const Header = () => {
 
@@ -55,13 +55,13 @@ const Header = () => {
         <>
             <Navbar expand="lg" className="bg-body-tertiary">
                 <Container>
-                    <Navbar.Brand href="/">Netix</Navbar.Brand>
+                    <Navbar.Brand as={Link} to="/">Netix</Navbar.Brand>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Nav className="me-auto">
                             <NavDropdown title="Danh mục" id="basic-nav-dropdown">
                                 {categoryTypes.map(c => (
-                                    <NavDropdown.Item href="#link" key={c.id}>
+                                    <NavDropdown.Item as={Link} to="#link" key={c.id}>
                                         {c.name}
                                     </NavDropdown.Item>
                                 ))}
@@ -82,13 +82,13 @@ const Header = () => {
                             </NavDropdown>
                             {isLoggedIn ? (
                                 <>
-                                    <Nav.Link href="/profile" className="btn btn-outline-primary me-2">Thông tin cá nhân</Nav.Link>
-                                    <Nav.Link href="/logout" className="btn btn-outline-danger">Đăng xuất</Nav.Link>
+                                    <Nav.Link as={Link} to="/profile" className="btn btn-outline-primary me-2">Thông tin cá nhân</Nav.Link>
+                                    <Nav.Link as={Link} to="/logout" className="btn btn-outline-danger">Đăng xuất</Nav.Link>
                                 </>
                             ) : (
                                 <>
-                                    <Nav.Link href="/login">Đăng nhập</Nav.Link>
-                                    <Nav.Link href="/register">Đăng ký</Nav.Link>
+                                    <Nav.Link as={Link} to="/login">Đăng nhập</Nav.Link>
+                                    <Nav.Link as={Link} to="/register">Đăng ký</Nav.Link>
                                 </>
                             )}
 

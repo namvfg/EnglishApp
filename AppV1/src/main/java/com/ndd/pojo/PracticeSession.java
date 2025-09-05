@@ -1,5 +1,6 @@
 package com.ndd.pojo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.*;
@@ -29,6 +30,7 @@ public class PracticeSession implements Serializable {
     @ManyToOne(optional = false)
     private Lesson lessonId;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSX")
     @Column(name = "start_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date startAt;

@@ -57,11 +57,11 @@ public class UserAnswer implements Serializable {
         this.id = id;
     }
 
-    public Section getExerciseId() {
+    public Section getSectionId() {
         return sectionId;
     }
 
-    public void setExerciseId(Section exerciseId) {
+    public void setSectionId(Section exerciseId) {
         this.sectionId = exerciseId;
     }
 

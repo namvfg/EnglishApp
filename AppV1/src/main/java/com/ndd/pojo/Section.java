@@ -54,6 +54,10 @@ public class Section implements Serializable {
     public Section() {
     }
 
+    public Section(int id) {
+        this.id = id;
+    }
+
     @PrePersist
     protected void onCreate() {
         this.createdDate = new Date();

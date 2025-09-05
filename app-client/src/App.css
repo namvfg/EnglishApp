@@ -85,6 +85,23 @@
   padding: 8px;
 }
 
+/* Highlight styles */
+.highlight-yellow {
+  background-color: yellow;
+}
+
+.highlight-toolbar {
+  position: absolute;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+  padding: 4px 8px;
+  z-index: 9999;
+  display: flex;
+  gap: 8px;
+}
+
 @media (max-width: 768px) {
   .split-layout {
     flex-direction: column;
